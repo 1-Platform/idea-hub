@@ -1,7 +1,7 @@
 <template>
   <header>
     <div class="header-logo">
-      <img src="@/assets/innovation_hub_logo.svg" alt="Idea Hub" />
+      <img src="@/assets/idea-hub.svg" alt="Idea Hub" />
     </div>
     <div class="header-data">
       <div class="header-title">Innovation Hub</div>

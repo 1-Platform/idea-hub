@@ -1,4 +1,6 @@
-# idea-hub-new
+# Idea Hub Spa
+
+A hub to share ideas and innovations
 
 ## Project setup
 ```

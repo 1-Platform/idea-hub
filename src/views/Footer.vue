@@ -1,16 +1,12 @@
 <template>
   <footer>
     <div class="footer-text">
-      <div class="footer-text-left">
-        Developer and Maintained by the <b> One Platform Team </b>
-      </div>
-      <div class="footer-text-middle">Internal use only</div>
-      <div class="footer-text-right">
-        Find out more about similar associate run projects
-      </div>
+      <span>Developer and Maintained by the <b> One Platform Team </b></span>
+      <span>Internal use only</span>
+      <span>Find out more about similar associate run projects</span>
     </div>
-    <div class="footer-logo">
-      <img src="@/assets/red_hat_logo.svg" alt="Redhat" />
+    <div>
+      <img src="@/assets/red-hat-logo.svg" alt="Redhat" />
     </div>
   </footer>
 </template>
@@ -31,7 +27,7 @@ footer > .footer-text {
   width: calc(100% + 12px);
 }
 
-footer > .footer-text > div {
+footer > .footer-text > span {
   margin: 6px;
 }
 </style>
