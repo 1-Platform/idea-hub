@@ -37,7 +37,7 @@
       </div>
     </div>
     <div class="tab-content">
-      <IdeaComponent />
+      <IdeaList />
     </div>
   </section>
 </template>
@@ -65,6 +65,7 @@ section {
   top: 0;
   background: #ffffff;
   z-index: 1;
+  margin-bottom: 16px;
 }
 
 .tab-content {
@@ -108,13 +109,13 @@ pfe-tab:focus {
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import Categories from "@/views/Categories.vue"; // @ is an alias to /src
-import IdeaComponent from "@/components/IdeaComponent.vue"; // @ is an alias to /src
+import IdeaList from "@/views/IdeaList.vue"; // @ is an alias to /src
 import "@patternfly/pfe-tabs";
 
 @Options({
   components: {
     Categories,
-    IdeaComponent,
+    IdeaList,
   },
 })
 export default class Home extends Vue {}

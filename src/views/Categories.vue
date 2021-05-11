@@ -3,8 +3,8 @@
     <li><a>My Ideas</a></li>
     <li><a class="active">Discover</a></li>
   </ul>
+  <p class="categories">Categories</p>
   <ul class="pf-c-list pf-m-plain pf-c-content categories">
-    <li class="title">Categories</li>
     <!-- TODO load categories from backend -->
   </ul>
 </template>
@@ -13,6 +13,7 @@
 .default-categories {
   margin-top: 24px;
 }
+
 .categories {
   margin-top: 24px;
   color: #6a6e73;
@@ -27,6 +28,7 @@
 a {
   color: inherit;
   text-decoration: none;
+  display: block;
 }
 
 .active {
