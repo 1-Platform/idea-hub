@@ -1,6 +1,6 @@
-import "./App.css";
+import './App.css';
 
-const App = () => {
+const App = (): JSX.Element => {
     return <div>React + Typescript</div>;
 };
 
