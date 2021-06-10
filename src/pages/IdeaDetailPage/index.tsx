@@ -1,0 +1,1 @@
+export { IdeaDetailPage } from './IdeaDetailPage';
