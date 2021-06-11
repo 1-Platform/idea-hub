@@ -1,13 +1,22 @@
-import { HomePage } from '../pages/HomePage';
-import { IdeaDetailPage } from '../pages/IdeaDetailPage';
+import { AppLayout } from 'layouts';
+import { HomePage } from 'pages/HomePage';
+import { IdeaDetailPage } from 'pages/IdeaDetailPage';
 
 export const routesArray = [
     {
         path: '/',
-        element: <HomePage />,
+        element: (
+            <AppLayout>
+                <HomePage />,
+            </AppLayout>
+        ),
     },
     {
         path: '/idea/:id',
-        element: <IdeaDetailPage />,
+        element: (
+            <AppLayout>
+                <IdeaDetailPage />,
+            </AppLayout>
+        ),
     },
 ];
