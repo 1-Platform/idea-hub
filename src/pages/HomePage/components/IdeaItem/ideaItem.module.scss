@@ -1,0 +1,13 @@
+.voteButton {
+    padding: 2px 8px !important;
+    --pf-c-button--after--BorderRadius: 8px;
+}
+
+.truncatedTitle {
+    width: 100%;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 20px;
+}

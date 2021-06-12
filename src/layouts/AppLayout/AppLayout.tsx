@@ -13,16 +13,16 @@ export const AppLayout: FC = ({ children }) => {
         <Page>
             <Container>
                 <Flex direction={{ default: 'column' }} className="h-full">
-                    <FlexItem className={styles.banner}>
-                        <PageSection padding={{ default: 'padding' }}>
+                    <FlexItem>
+                        <PageSection padding={{ default: 'padding' }} className={styles.banner}>
                             <AppBanner />
                         </PageSection>
                     </FlexItem>
                     <Flex direction={{ default: 'column' }} flex={{ default: 'flex_1' }}>
                         <FlexItem>{children}</FlexItem>
                     </Flex>
-                    <FlexItem className={styles.footer}>
-                        <PageSection padding={{ default: 'padding' }}>
+                    <FlexItem>
+                        <PageSection padding={{ default: 'padding' }} className={styles.footer}>
                             <Footer />
                         </PageSection>
                     </FlexItem>

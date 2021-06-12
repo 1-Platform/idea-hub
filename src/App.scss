@@ -7,6 +7,29 @@ body,
     margin: 0;
 }
 
+.pf-c-button.pf-m-primary {
+    --pf-c-button--m-primary--BackgroundColor: rgba(120, 200, 250);
+}
+
+.pf-c-page {
+    --pf-c-page--BackgroundColor: #fff;
+}
+.pf-c-tabs__item.pf-m-current {
+    --pf-c-tabs__link--after--BorderColor: rgba(120, 200, 250);
+    --pf-c-tabs__link--Color: #000000;
+}
+
+.pf-c-tabs {
+    --pf-c-tabs--before--BorderBottomWidth: 0;
+    &__link:hover {
+        --pf-c-tabs--before--BorderBottomWidth: 0;
+    }
+
+    &:hover {
+        --pf-c-tabs--before--BorderBottomWidth: 0;
+    }
+}
+
 .h-full {
     height: 100%;
 }
@@ -23,6 +46,28 @@ body,
     font-weight: bold !important;
 }
 
+.p-0 {
+    padding: 0 !important;
+}
+
+.px-2 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
+.py-1 {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+}
+
+.pb-2 {
+    padding-bottom: 0.5rem !important;
+}
+
+.pb-3 {
+    padding-bottom: 0.75rem !important;
+}
+
 .pb-4 {
     padding-bottom: 1rem !important;
 }
@@ -33,4 +78,8 @@ body,
 
 .text-small {
     font-size: 12px !important;
+}
+
+.rounded {
+    border-radius: 8px !important;
 }
