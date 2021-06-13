@@ -1,4 +1,4 @@
-import { Button, Grid, GridItem } from '@patternfly/react-core';
+import { Button, Grid, GridItem, Stack, StackItem } from '@patternfly/react-core';
 
 import { MenuTab } from './components/MenuTab';
 import { Categories } from './components/Categories';
@@ -19,7 +19,22 @@ export const HomePage = (): JSX.Element => {
                 <Categories />
             </GridItem>
             <GridItem span={9}>
-                <IdeaItem />
+                <Stack hasGutter>
+                    {Array(10)
+                        .fill(0)
+                        .map((_, index) => (
+                            <StackItem key={`idea-${index}`}>
+                                <IdeaItem
+                                    voteCount={100}
+                                    commentCount={2}
+                                    hasVoted={!index}
+                                    postedOn="6/12/2021"
+                                    user="Mayur Deshmukh"
+                                    title="An internal platform for associate run projects and experimentation"
+                                />
+                            </StackItem>
+                        ))}
+                </Stack>
             </GridItem>
         </Grid>
     );
