@@ -64,10 +64,6 @@ body,
     padding-bottom: 0.5rem !important;
 }
 
-.pb-3 {
-    padding-bottom: 0.75rem !important;
-}
-
 .pb-4 {
     padding-bottom: 1rem !important;
 }
@@ -76,10 +72,18 @@ body,
     margin-right: 1rem;
 }
 
+.mt-4 {
+    margin-top: 1rem !important;
+}
+
 .text-small {
     font-size: 12px !important;
 }
 
 .rounded {
     border-radius: 8px !important;
+}
+
+.opacity-50 {
+    opacity: 50;
 }
