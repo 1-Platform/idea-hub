@@ -68,7 +68,7 @@ export const NewIdeaModal = ({ isOpen, handleModalClose }: Props): JSX.Element =
                     </FormGroup>
                 </StackItem>
                 <StackItem className="mt-4">
-                    <Split hasGutter>
+                    <Split hasGutter style={{ alignItems: 'center' }}>
                         <SplitItem isFilled />
                         <SplitItem>
                             <Button key="cancel" variant="plain" onClick={handleModalClose}>

@@ -7,12 +7,18 @@ body,
 }
 
 .pf-c-button.pf-m-primary {
-    --pf-c-button--m-primary--BackgroundColor: rgba(120, 200, 250);
+    --pf-c-button--m-primary--BackgroundColor: #61bffa;
+    padding: 12px 16px;
+}
+
+.pf-c-tabs__item.pf-m-current button span {
+    font-weight: 600;
 }
 
 .pf-c-page {
     --pf-c-page--BackgroundColor: #fff;
 }
+
 .pf-c-tabs__item.pf-m-current {
     --pf-c-tabs__link--after--BorderColor: rgba(120, 200, 250);
     --pf-c-tabs__link--Color: #000000;

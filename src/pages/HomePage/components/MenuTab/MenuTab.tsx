@@ -2,8 +2,8 @@ import { Flex, FlexItem, Tab, Tabs, TabTitleText, TextInput } from '@patternfly/
 
 export const MenuTab = (): JSX.Element => {
     return (
-        <Flex>
-            <Flex grow={{ default: 'grow' }}>
+        <Flex className="h-full" alignItems={{ default: 'alignItemsCenter' }}>
+            <Flex flex={{ default: 'flex_2' }}>
                 <FlexItem>
                     <Tabs defaultActiveKey={0}>
                         <Tab eventKey={0} title={<TabTitleText>Recent</TabTitleText>}></Tab>
@@ -11,9 +11,14 @@ export const MenuTab = (): JSX.Element => {
                     </Tabs>
                 </FlexItem>
             </Flex>
-            <FlexItem>
-                <TextInput placeholder="Looking for an idea!" type="search" iconVariant="search" />
-            </FlexItem>
+            <Flex flex={{ default: 'flex_1' }}>
+                <TextInput
+                    placeholder="Looking for an idea!"
+                    type="search"
+                    iconVariant="search"
+                    style={{ borderColor: '#EEEEEE' }}
+                />
+            </Flex>
         </Flex>
     );
 };
