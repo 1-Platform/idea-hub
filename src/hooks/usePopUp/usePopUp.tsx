@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 interface usePopUpProps {
-    name: Readonly<string>;
-    isOpen: boolean;
+  name: Readonly<string>;
+  isOpen: boolean;
 }
 
 /**
@@ -11,17 +11,17 @@ interface usePopUpProps {
  * SIDENOTE: On inputting give it as const and not string with (as const)
  */
 type usePopUpState<T extends Readonly<string[]> | usePopUpProps[]> = {
-    [P in T extends usePopUpProps[] ? T[number]['name'] : T[number]]: {
-        isOpen: boolean;
-        data?: unknown;
-    };
+  [P in T extends usePopUpProps[] ? T[number]['name'] : T[number]]: {
+    isOpen: boolean;
+    data?: unknown;
+  };
 };
 
 interface usePopUpReturn<T extends Readonly<string[]> | usePopUpProps[]> {
-    popUp: usePopUpState<T>;
-    handlePopUpOpen: (popUpName: keyof usePopUpState<T>, data?: unknown) => void;
-    handlePopUpClose: (popUpName: keyof usePopUpState<T>) => void;
-    handlePopUpToggle: (popUpName: keyof usePopUpState<T>) => void;
+  popUp: usePopUpState<T>;
+  handlePopUpOpen: (popUpName: keyof usePopUpState<T>, data?: unknown) => void;
+  handlePopUpClose: (popUpName: keyof usePopUpState<T>) => void;
+  handlePopUpToggle: (popUpName: keyof usePopUpState<T>) => void;
 }
 
 /**
@@ -30,34 +30,34 @@ interface usePopUpReturn<T extends Readonly<string[]> | usePopUpProps[]> {
  * @param popUpNames: the names of popUp containers eg: ["popUp1","second"] or [{name:"popUp2",isOpen:bool}]
  */
 export const usePopUp = <T extends Readonly<string[]> | usePopUpProps[]>(
-    popUpNames: T
+  popUpNames: T
 ): usePopUpReturn<T> => {
-    const [popUp, setPopUp] = useState<usePopUpState<T>>(
-        Object.fromEntries(
-            popUpNames.map((popUpName) =>
-                typeof popUpName === 'string'
-                    ? [popUpName, { isOpen: false }]
-                    : [popUpName.name, { isOpen: popUpName.isOpen }]
-            ) // convert into an array of [[popUpName,state]] then into Object
-        ) as usePopUpState<T> // to override generic string return type of the function
-    );
+  const [popUp, setPopUp] = useState<usePopUpState<T>>(
+    Object.fromEntries(
+      popUpNames.map((popUpName) =>
+        typeof popUpName === 'string'
+          ? [popUpName, { isOpen: false }]
+          : [popUpName.name, { isOpen: popUpName.isOpen }]
+      ) // convert into an array of [[popUpName,state]] then into Object
+    ) as usePopUpState<T> // to override generic string return type of the function
+  );
 
-    const handlePopUpOpen = (popUpName: keyof usePopUpState<T>, data?: unknown) => {
-        setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: true, data } }));
-    };
+  const handlePopUpOpen = (popUpName: keyof usePopUpState<T>, data?: unknown) => {
+    setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: true, data } }));
+  };
 
-    const handlePopUpClose = (popUpName: keyof usePopUpState<T>) => {
-        setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: false } }));
-    };
+  const handlePopUpClose = (popUpName: keyof usePopUpState<T>) => {
+    setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: false } }));
+  };
 
-    const handlePopUpToggle = (popUpName: keyof usePopUpState<T>) => {
-        setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: !popUp[popUpName].isOpen } }));
-    };
+  const handlePopUpToggle = (popUpName: keyof usePopUpState<T>) => {
+    setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: !popUp[popUpName].isOpen } }));
+  };
 
-    return {
-        popUp,
-        handlePopUpOpen,
-        handlePopUpClose,
-        handlePopUpToggle,
-    };
+  return {
+    popUp,
+    handlePopUpOpen,
+    handlePopUpClose,
+    handlePopUpToggle,
+  };
 };

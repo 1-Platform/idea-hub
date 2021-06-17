@@ -6,5 +6,5 @@ import style from './container.module.scss';
  * Limiting the width to a particular value in big screen
  */
 export const Container: FC = ({ children }) => {
-    return <div className={style.container}>{children}</div>;
+  return <div className={style.container}>{children}</div>;
 };
