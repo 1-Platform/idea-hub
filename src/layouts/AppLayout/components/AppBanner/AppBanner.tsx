@@ -17,7 +17,11 @@ export const AppBanner = (): JSX.Element => {
         <img src="/images/innovation_logo.svg" className={style.logo} />
       </FlexItem>
       <FlexItem>
-        <Title headingLevel="h6" size={TitleSizes['3xl']} className="pb-4 text-light">
+        <Title
+          headingLevel="h6"
+          size={TitleSizes['3xl']}
+          className="pf-u-pb-md pf-u-font-weight-light"
+        >
           Innovation Hub
         </Title>
         <TextContent>

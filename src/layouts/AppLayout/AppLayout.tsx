@@ -12,7 +12,11 @@ export const AppLayout: FC = ({ children }) => {
   return (
     <Page>
       <Container>
-        <Flex direction={{ default: 'column' }} className="h-full" flexWrap={{ default: 'nowrap' }}>
+        <Flex
+          direction={{ default: 'column' }}
+          className="pf-u-h-full"
+          flexWrap={{ default: 'nowrap' }}
+        >
           <FlexItem>
             <PageSection padding={{ default: 'padding' }} className={styles.banner}>
               <AppBanner />

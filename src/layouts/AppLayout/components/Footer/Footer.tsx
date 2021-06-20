@@ -6,11 +6,12 @@ export const Footer = (): JSX.Element => {
       <Flex flex={{ default: 'flex_1' }}>
         <FlexItem>
           <TextContent>
-            <Text component={TextVariants.p} className="text-small">
-              <span className="mr-4">
-                Developer and Maintained by the <span className="text-bold">One Platform Team</span>
+            <Text component={TextVariants.p} className="pf-u-font-size-xs">
+              <span className="pf-u-mr-md">
+                Developer and Maintained by the{' '}
+                <span className="pf-u-font-weight-bold">One Platform Team</span>
               </span>
-              <span className="mr-4">Internal use only</span>
+              <span className="pf-u-mr-md">Internal use only</span>
               Find out more about similar associate run projects
             </Text>
           </TextContent>

@@ -98,7 +98,7 @@ export const IdeaItem = ({
               </Flex>
               <FlexItem>
                 <Dropdown
-                  toggle={<KebabToggle className="p-0" onToggle={handleToggle} />}
+                  toggle={<KebabToggle className="pf-u-p-0" onToggle={handleToggle} />}
                   isOpen={isOpen}
                   onSelect={handleToggle}
                   isPlain
@@ -113,7 +113,7 @@ export const IdeaItem = ({
               </FlexItem>
               <FlexItem flex={{ default: 'flex_1' }}>
                 <Text component={TextVariants.small}>
-                  Submitted by: <span className="text-bold">{user}</span>
+                  Submitted by: <span className="pf-u-font-weight-bold">{user}</span>
                 </Text>
               </FlexItem>
               <Flex spacer={{ default: 'spacerSm' }} alignItems={{ default: 'alignItemsCenter' }}>

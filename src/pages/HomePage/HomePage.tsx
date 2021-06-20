@@ -56,7 +56,7 @@ export const HomePage = (): JSX.Element => {
             ))}
             {isFetching && (
               <StackItem>
-                <Text className="text-center">Loading more ideas...</Text>
+                <Text className="pf-u-text-align-center">Loading more ideas...</Text>
               </StackItem>
             )}
           </Stack>

@@ -30,7 +30,7 @@ export const NewIdeaModal = ({ isOpen, handleModalClose }: Props): JSX.Element =
           <FormGroup
             fieldId="title"
             label={
-              <Text style={{ color: '#2121218A' }} className="pb-2">
+              <Text style={{ color: '#2121218A' }} className="pf-u-pb-sm">
                 Give a title for your idea:
               </Text>
             }
@@ -42,7 +42,7 @@ export const NewIdeaModal = ({ isOpen, handleModalClose }: Props): JSX.Element =
           <FormGroup
             fieldId="desc"
             label={
-              <Text style={{ color: '#2121218A' }} className="pb-2">
+              <Text style={{ color: '#2121218A' }} className="pf-u-pb-sm">
                 Brief description
               </Text>
             }
@@ -59,7 +59,7 @@ export const NewIdeaModal = ({ isOpen, handleModalClose }: Props): JSX.Element =
           <FormGroup
             fieldId="title"
             label={
-              <Text style={{ color: '#2121218A' }} className="pb-2">
+              <Text style={{ color: '#2121218A' }} className="pf-u-pb-sm">
                 Add some tags to your idea so others can find it:
               </Text>
             }
@@ -67,7 +67,7 @@ export const NewIdeaModal = ({ isOpen, handleModalClose }: Props): JSX.Element =
             <TextInput name="title" isRequired placeholder="Select at least one…" />
           </FormGroup>
         </StackItem>
-        <StackItem className="mt-4">
+        <StackItem className="pf-u-mt-md">
           <Split hasGutter style={{ alignItems: 'center' }}>
             <SplitItem isFilled />
             <SplitItem>

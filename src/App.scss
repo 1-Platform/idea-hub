@@ -1,98 +1,40 @@
+@import '@patternfly/react-styles/css/utilities/Spacing/spacing.css',
+  '@patternfly/react-styles/css/utilities/Text/text.css',
+  '@patternfly/react-styles/css/utilities/Alignment/alignment.css';
+
 html,
 body,
 #root {
-    width: 100vw;
-    padding: 0;
-    margin: 0;
+  width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .pf-c-button.pf-m-primary {
-    --pf-c-button--m-primary--BackgroundColor: #61bffa;
-    padding: 12px 16px;
+  --pf-c-button--m-primary--BackgroundColor: #61bffa;
+  padding: 12px 16px;
 }
 
 .pf-c-tabs__item.pf-m-current button span {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .pf-c-page {
-    --pf-c-page--BackgroundColor: #fff;
+  --pf-c-page--BackgroundColor: #fff;
 }
 
 .pf-c-tabs__item.pf-m-current {
-    --pf-c-tabs__link--after--BorderColor: rgba(120, 200, 250);
-    --pf-c-tabs__link--Color: #000000;
+  --pf-c-tabs__link--after--BorderColor: rgba(120, 200, 250);
+  --pf-c-tabs__link--Color: #000000;
 }
 
 .pf-c-tabs {
+  --pf-c-tabs--before--BorderBottomWidth: 0;
+  &__link:hover {
     --pf-c-tabs--before--BorderBottomWidth: 0;
-    &__link:hover {
-        --pf-c-tabs--before--BorderBottomWidth: 0;
-    }
+  }
 
-    &:hover {
-        --pf-c-tabs--before--BorderBottomWidth: 0;
-    }
-}
-
-.h-full {
-    height: 100%;
-}
-
-.w-full {
-    width: 100%;
-}
-
-.text-light {
-    font-weight: 300 !important;
-}
-
-.text-bold {
-    font-weight: bold !important;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.p-0 {
-    padding: 0 !important;
-}
-
-.px-2 {
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-}
-
-.py-1 {
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.25rem !important;
-}
-
-.pb-2 {
-    padding-bottom: 0.5rem !important;
-}
-
-.pb-4 {
-    padding-bottom: 1rem !important;
-}
-
-.mr-4 {
-    margin-right: 1rem;
-}
-
-.mt-4 {
-    margin-top: 1rem !important;
-}
-
-.text-small {
-    font-size: 12px !important;
-}
-
-.rounded {
-    border-radius: 8px !important;
-}
-
-.opacity-50 {
-    opacity: 50;
+  &:hover {
+    --pf-c-tabs--before--BorderBottomWidth: 0;
+  }
 }

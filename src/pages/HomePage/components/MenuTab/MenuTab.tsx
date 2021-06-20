@@ -2,7 +2,7 @@ import { Flex, FlexItem, Tab, Tabs, TabTitleText, TextInput } from '@patternfly/
 
 export const MenuTab = (): JSX.Element => {
   return (
-    <Flex className="h-full" alignItems={{ default: 'alignItemsCenter' }}>
+    <Flex className="pf-u-h-full" alignItems={{ default: 'alignItemsCenter' }}>
       <Flex flex={{ default: 'flex_2' }}>
         <FlexItem>
           <Tabs defaultActiveKey={0}>

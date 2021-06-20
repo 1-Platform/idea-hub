@@ -29,9 +29,9 @@ export const Categories = (): JSX.Element => {
   return (
     <Menu style={{ '--pf-c-menu--BoxShadow': 0 } as CSSProperties}>
       <MenuGroup>
-        <MenuList>
+        <MenuList className="pf-u-pt-0">
           <MenuItem>My ideas</MenuItem>
-          <MenuItem className="text-bold">Discover</MenuItem>
+          <MenuItem className="pf-u-font-weight-bold">Discover</MenuItem>
         </MenuList>
       </MenuGroup>
       <MenuGroup label="Categories">
