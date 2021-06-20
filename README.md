@@ -1,6 +1,6 @@
-## Idea Innovation Hub SPA for One-Platform
+# Idea Hub SPA for One-Platform
 
-This repository consists of Idea Innovation Hub SPA for [One Platform](https://github.com/1-Platform/one-platform)
+Idea Hub is a hub to share ideas and innovations, with feedbacks from other users. This repository is part of [One Platform](https://github.com/1-Platform/one-platform).
 
 ## Prerequisite
 
