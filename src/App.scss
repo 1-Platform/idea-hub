@@ -8,6 +8,13 @@ body,
   width: 100%;
   padding: 0;
   margin: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+main {
+  overflow: auto;
+  height: 100%;
 }
 
 .pf-c-button.pf-m-primary {
