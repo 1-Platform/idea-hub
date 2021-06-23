@@ -1,22 +1,9 @@
 .sticky {
   &-title {
     position: sticky;
-    top: 0;
+    top: 3.5rem;
     padding-top: 16px;
     background-color: white;
     z-index: 10;
-  }
-
-  &-sidebar {
-    position: sticky;
-    top: 80px;
-    background: white;
-    height: max-content;
-  }
-
-  &-topbar {
-    // this style is applied on menu-bar for making the cards border invisible on scroll
-    margin-left: -1.5px;
-    width: calc(100% + 3px);
   }
 }

@@ -23,7 +23,7 @@ export const AppLayout: FC = ({ children }) => {
             </PageSection>
           </FlexItem>
           <Flex direction={{ default: 'column' }} flex={{ default: 'flex_1' }}>
-            <FlexItem>{children}</FlexItem>
+            {children}
           </Flex>
           <FlexItem>
             <PageSection padding={{ default: 'padding' }} className={styles.footer}>
