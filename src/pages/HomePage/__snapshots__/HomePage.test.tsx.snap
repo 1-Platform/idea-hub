@@ -1,0 +1,192 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomePage matches the snapshot saved 1`] = `
+<React.Fragment>
+  <Grid
+    hasGutter={true}
+  >
+    <GridItem
+      span={3}
+    >
+      <Flex
+        className="sticky-title"
+        direction={
+          Object {
+            "default": "column",
+          }
+        }
+        flexWrap={
+          Object {
+            "default": "nowrap",
+          }
+        }
+      >
+        <FlexItem>
+          <Button
+            isBlock={true}
+            onClick={[Function]}
+            variant="primary"
+          >
+            Post a new idea!
+          </Button>
+        </FlexItem>
+        <FlexItem>
+          <Categories />
+        </FlexItem>
+      </Flex>
+    </GridItem>
+    <GridItem
+      span={9}
+    >
+      <Flex
+        direction={
+          Object {
+            "default": "column",
+          }
+        }
+        flexWrap={
+          Object {
+            "default": "nowrap",
+          }
+        }
+      >
+        <FlexItem
+          className="sticky-title"
+        >
+          <MenuTab />
+        </FlexItem>
+        <FlexItem>
+          <Stack
+            hasGutter={true}
+          >
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={true}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+            <StackItem
+              className="pf-u-mx-xs"
+            >
+              <IdeaItem
+                commentCount={2}
+                hasVoted={false}
+                postedOn="6/12/2021"
+                title="An internal platform for associate run projects and experimentation"
+                user="Mayur Deshmukh"
+                voteCount={100}
+              />
+            </StackItem>
+          </Stack>
+        </FlexItem>
+      </Flex>
+    </GridItem>
+  </Grid>
+  <NewIdeaModal
+    handleModalClose={[Function]}
+    isOpen={false}
+  />
+</React.Fragment>
+`;
