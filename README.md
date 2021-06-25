@@ -1,40 +1,35 @@
-# Idea Hub Spa
+# Idea Hub SPA for One Platform
 
-A hub to share ideas and innovations
+Idea Hub is a place to share ideas and innovations, with feedbacks from other users. This repository is part of [One Platform](https://github.com/1-Platform/one-platform).
 
-## Project setup
-```
-npm install
-```
+## Prerequisites
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+1. Nodejs v14.17.1
+2. NPM v6.14.10
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Install dependencies
 
-### Run your unit tests
-```
-npm run test:unit
-```
+1. Clone the repository and switch into directory
+   `git clone https://github.com/1-Platform/idea-hub.git && cd idea-hub`
+2. Install Dependencies
+   `npm install`
 
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
+## Start SPA
 
-### Lints and fixes files
-```
-npm run lint
-```
+run `npm start`
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Start Production Build
 
-## Contributors:
+run `npm run build`
 
-👤 **Prasad Ambulkar** (https://github.com/Prasadambulkar3/)
+## Start Test
+
+run `npm test`
+
+## Run lint
+
+run `npm run lint:fix`
+
+## 🤝 Contributors
+
+👤 **Akhil Mohan** [akhilmhdh](https://github.com/akhilmhdh)

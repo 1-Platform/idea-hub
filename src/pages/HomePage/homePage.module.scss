@@ -1,0 +1,9 @@
+.sticky {
+  &-title {
+    position: sticky;
+    top: 3.5rem;
+    padding-top: 16px;
+    background-color: white;
+    z-index: 10;
+  }
+}

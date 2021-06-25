@@ -1,0 +1,44 @@
+@import '@patternfly/react-styles/css/utilities/Spacing/spacing.css',
+  '@patternfly/react-styles/css/utilities/Text/text.css',
+  '@patternfly/react-styles/css/utilities/Alignment/alignment.css';
+
+html,
+body,
+#root {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.pf-c-page__main {
+  overflow: unset;
+}
+
+.pf-c-button.pf-m-primary {
+  --pf-c-button--m-primary--BackgroundColor: #61bffa;
+  padding: 12px 16px;
+}
+
+.pf-c-tabs__item.pf-m-current button span {
+  font-weight: 600;
+}
+
+.pf-c-page {
+  --pf-c-page--BackgroundColor: #fff;
+}
+
+.pf-c-tabs__item.pf-m-current {
+  --pf-c-tabs__link--after--BorderColor: rgba(120, 200, 250);
+  --pf-c-tabs__link--Color: #000000;
+}
+
+.pf-c-tabs {
+  --pf-c-tabs--before--BorderBottomWidth: 0;
+  &__link:hover {
+    --pf-c-tabs--before--BorderBottomWidth: 0;
+  }
+
+  &:hover {
+    --pf-c-tabs--before--BorderBottomWidth: 0;
+  }
+}
