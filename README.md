@@ -4,13 +4,15 @@ Idea Hub is a place to share ideas and innovations, with feedbacks from other us
 
 ## Prerequisites
 
-1. node[v14]
-2. npm[v6]
+1. Nodejs v14.17.1
+2. NPM v6.14.10
 
 ## Install dependencies
 
-1. `git clone && cd <into the repo>`
-2. `npm install`
+1. Clone the repository and switch into directory
+   `git clone https://github.com/1-Platform/idea-hub.git && cd idea-hub`
+2. Install Dependencies
+   `npm install`
 
 ## Start SPA
 
