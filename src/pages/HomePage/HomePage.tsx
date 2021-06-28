@@ -18,6 +18,7 @@ import { IdeaItem } from './components/IdeaItem';
 import { NewIdeaModal } from './components/NewIdeaModal';
 
 import styles from './homePage.module.scss';
+import { Link } from 'react-router-dom';
 
 const MAXIMUM_POSTS = 50;
 const EACH_LOADING = 10;
@@ -67,14 +68,16 @@ export const HomePage = (): JSX.Element => {
               <Stack hasGutter>
                 {ideas.map((_, index) => (
                   <StackItem key={`idea-${index}`} className="pf-u-mx-xs">
-                    <IdeaItem
-                      voteCount={100}
-                      commentCount={2}
-                      hasVoted={!index}
-                      postedOn="6/12/2021"
-                      user="Mayur Deshmukh"
-                      title="An internal platform for associate run projects and experimentation"
-                    />
+                    <Link to="/idea/123456789">
+                      <IdeaItem
+                        voteCount={100}
+                        commentCount={2}
+                        hasVoted={!index}
+                        postedOn="6/12/2021"
+                        user="Mayur Deshmukh"
+                        title="An internal platform for associate run projects and experimentation"
+                      />
+                    </Link>
                   </StackItem>
                 ))}
                 {fetchState.isFetching && (

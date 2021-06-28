@@ -1,0 +1,1 @@
+export { VoteCard } from './VoteCard';

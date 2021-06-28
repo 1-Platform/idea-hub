@@ -10,6 +10,11 @@ body,
   margin: 0;
 }
 
+a {
+  text-decoration: none;
+  color: unset;
+}
+
 .pf-c-page__main {
   overflow: unset;
 }
@@ -41,4 +46,8 @@ body,
   &:hover {
     --pf-c-tabs--before--BorderBottomWidth: 0;
   }
+}
+
+.rounded {
+  border-radius: 8px;
 }

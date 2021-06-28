@@ -7,7 +7,7 @@ export const routesArray = [
     path: '/',
     element: (
       <AppLayout>
-        <HomePage />,
+        <HomePage />
       </AppLayout>
     ),
   },
@@ -15,7 +15,7 @@ export const routesArray = [
     path: '/idea/:id',
     element: (
       <AppLayout>
-        <IdeaDetailPage />,
+        <IdeaDetailPage />
       </AppLayout>
     ),
   },
