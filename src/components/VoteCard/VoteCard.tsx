@@ -33,7 +33,6 @@ export const VoteCard: FC<Props> & CompoundComponents = ({
   const buttonChildren: ReactElement[] = [];
 
   ReactChildren.forEach(children as ReactElement, (child: ReactElement) => {
-    console.log(child.type);
     if (child.type === VoteCardUtilButton) {
       buttonChildren.push(child);
     }
@@ -59,8 +58,12 @@ export const VoteCard: FC<Props> & CompoundComponents = ({
           <FlexItem>
             <Text className="pf-u-font-weight-light pf-u-color-400">votes</Text>
           </FlexItem>
-          <FlexItem>
-            <Button variant="secondary" isLarge onClick={onVoteClick} className="rounded">
+          <FlexItem spacer={{ default: 'spacerLg' }}>
+            <Button
+              variant="secondary"
+              onClick={onVoteClick}
+              className="rounded pf-u-px-lg pf-u-py-sm"
+            >
               VOTE
             </Button>
           </FlexItem>

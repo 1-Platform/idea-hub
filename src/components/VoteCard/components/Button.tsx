@@ -7,7 +7,7 @@ export const Button = ({ children, className, ...props }: ButtonProps): JSX.Elem
       <BaseButton
         variant="plain"
         {...props}
-        className={css('pf-u-p-0 pf-u-font-weight-light', className)}
+        className={css('pf-u-p-0 pf-u-font-weight-light pf-u-color-400', className)}
       >
         {children}
       </BaseButton>

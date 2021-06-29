@@ -1,6 +1,7 @@
 @import '@patternfly/react-styles/css/utilities/Spacing/spacing.css',
   '@patternfly/react-styles/css/utilities/Text/text.css',
-  '@patternfly/react-styles/css/utilities/Alignment/alignment.css';
+  '@patternfly/react-styles/css/utilities/Alignment/alignment.css',
+  '@patternfly/react-styles/css/utilities/Sizing/sizing.css';
 
 html,
 body,
@@ -22,6 +23,15 @@ a {
 .pf-c-button.pf-m-primary {
   --pf-c-button--m-primary--BackgroundColor: #61bffa;
   padding: 12px 16px;
+}
+
+.pf-c-button.pf-m-secondary {
+  --pf-c-button--after--BorderColor: #61bffa;
+  --pf-c-button--m-secondary--Color: #61bffa;
+}
+
+.pf-c-button.pf-m-link {
+  --pf-c-button--m-link--Color: 'unset';
 }
 
 .pf-c-tabs__item.pf-m-current button span {
@@ -46,6 +56,12 @@ a {
   &:hover {
     --pf-c-tabs--before--BorderBottomWidth: 0;
   }
+}
+
+.pf-c-chip {
+  --pf-c-chip--BackgroundColor: #eeeeee;
+  --pf-c-chip--BorderRadius: 16px;
+  padding: 4px 12px;
 }
 
 .rounded {
