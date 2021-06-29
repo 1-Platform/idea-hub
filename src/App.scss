@@ -11,6 +11,17 @@ body,
   margin: 0;
 }
 
+.pf-c-breadcrumb__link {
+  --pf-c-breadcrumb__link--Color: 'unset';
+}
+
+.pf-c-alert.pf-m-inline {
+  --pf-c-alert--BackgroundColor: 'transparent';
+  border: 1px solid #dddddd;
+  border-left: 4px solid;
+  border-left-color: var(--pf-c-alert--BorderTopColor);
+}
+
 a {
   text-decoration: none;
   color: unset;

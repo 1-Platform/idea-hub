@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,10 +9,6 @@ import {
   FlexItem,
   Grid,
   GridItem,
-  Menu,
-  MenuContent,
-  MenuList,
-  MenuItem,
   Text,
   TextVariants,
   Title,
@@ -46,14 +42,17 @@ export const IdeaDetailPage = (): JSX.Element => {
               </Link>
             </FlexItem>
             <FlexItem>
-              <Breadcrumb>
+              <Breadcrumb className="pf-u-color-400">
                 <BreadcrumbItem>Home</BreadcrumbItem>
                 <BreadcrumbItem to="#">mdeshmuk</BreadcrumbItem>
                 <BreadcrumbItem to="#">#03</BreadcrumbItem>
               </Breadcrumb>
             </FlexItem>
             <FlexItem>
-              <Text component={TextVariants['small']}>{`Posted on ${postedOn}`}</Text>
+              <Text
+                component={TextVariants['small']}
+                className="pf-u-color-400"
+              >{`Posted on ${postedOn}`}</Text>
             </FlexItem>
           </Flex>
           <FlexItem>
