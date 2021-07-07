@@ -43,8 +43,7 @@ export const IdeaDetailPage = (): JSX.Element => {
             </FlexItem>
             <FlexItem>
               <Breadcrumb className="pf-u-color-400">
-                <BreadcrumbItem>Home</BreadcrumbItem>
-                <BreadcrumbItem to="#">mdeshmuk</BreadcrumbItem>
+                <BreadcrumbItem>Ideas</BreadcrumbItem>
                 <BreadcrumbItem to="#">#03</BreadcrumbItem>
               </Breadcrumb>
             </FlexItem>
