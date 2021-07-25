@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { debounceFn } from 'utils/debounceFn';
 
 interface FetchState {
   isFetching: boolean;
@@ -33,9 +34,10 @@ export const useInfiniteScroll = (
     const targetedElement = typeof ref === 'function' ? ref() : ref;
     // removing scroll trigger in disable state
     fetchState.isFetchDisabled
-      ? (targetedElement || window).removeEventListener('scroll', handleScroll)
-      : (targetedElement || window).addEventListener('scroll', handleScroll);
-    return () => (targetedElement || window).removeEventListener('scroll', handleScroll);
+      ? (targetedElement || window).removeEventListener('scroll', debounceFn(handleScroll, 500))
+      : (targetedElement || window).addEventListener('scroll', debounceFn(handleScroll, 500));
+    return () =>
+      (targetedElement || window).removeEventListener('scroll', debounceFn(handleScroll, 500));
   }, [fetchState.isFetchDisabled]);
 
   useEffect(() => {
@@ -43,7 +45,7 @@ export const useInfiniteScroll = (
     callback();
   }, [fetchState.isFetching]);
 
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     // checks reached bottom page OR is a fetching going on OR is disabled
     if (
       window.innerHeight + document.documentElement.scrollTop !==
@@ -53,7 +55,7 @@ export const useInfiniteScroll = (
     )
       return;
     setFetchState((fetchState) => ({ ...fetchState, isFetching: true }));
-  };
+  }, [fetchState.isFetching, fetchState.isFetchDisabled]);
 
   const handleFetchState = (state: keyof FetchState, type: boolean): void => {
     setFetchState((fetchState) => ({ ...fetchState, [state]: type }));

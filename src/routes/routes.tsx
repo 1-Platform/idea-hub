@@ -5,6 +5,7 @@ import { IdeaDetailPage } from 'pages/IdeaDetailPage';
 export const routesArray = [
   {
     path: '/',
+    exact: true,
     element: (
       <AppLayout>
         <HomePage />
@@ -12,7 +13,7 @@ export const routesArray = [
     ),
   },
   {
-    path: '/idea/:id',
+    path: '/:id',
     element: (
       <AppLayout>
         <IdeaDetailPage />

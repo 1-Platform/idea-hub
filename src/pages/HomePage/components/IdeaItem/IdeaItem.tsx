@@ -13,7 +13,7 @@ import {
   Text,
   TextVariants,
 } from '@patternfly/react-core';
-import CommentsIcon from '@patternfly/react-icons/dist/js/icons/comment-icon';
+import { CommentsIcon } from '@patternfly/react-icons';
 
 import { useToggle } from 'hooks';
 import { postedOnFormater } from 'utils/postedOnFormater';
@@ -24,9 +24,13 @@ interface Props {
   voteCount: number;
   hasVoted?: boolean;
   title: string;
-  postedOn: string;
+  postedOn: string | number;
   user: string;
   commentCount: number;
+  onVoteClick: () => Promise<void> | void;
+  onEditIdeaClick?: () => Promise<void> | void;
+  onArchiveButtonClick?: () => Promise<void> | void;
+  isArchived?: boolean;
 }
 
 export const IdeaItem = ({
@@ -36,6 +40,10 @@ export const IdeaItem = ({
   postedOn,
   user,
   commentCount,
+  onVoteClick,
+  onEditIdeaClick,
+  onArchiveButtonClick,
+  isArchived,
 }: Props): JSX.Element => {
   const { isOpen, handleToggle } = useToggle(false);
 
@@ -45,11 +53,19 @@ export const IdeaItem = ({
    * @returns {String} : 2 days ago, 2 months ago, 5 years ago
    */
   const postedOnFormated = useMemo((): string => postedOnFormater(postedOn), [postedOn]);
+  const userinfo = window.OpAuthHelper.getUserInfo();
 
   const dropdownItems = [
-    <DropdownItem key="link">Edit my idea</DropdownItem>,
-    <DropdownItem key="action" component="button" style={{ color: '#D30000' }}>
-      Archive my idea
+    <DropdownItem key="link" component="button" onClick={onEditIdeaClick}>
+      Edit my idea
+    </DropdownItem>,
+    <DropdownItem
+      key="action"
+      component="button"
+      style={{ color: '#D30000' }}
+      onClick={onArchiveButtonClick}
+    >
+      {isArchived ? 'Unarchive my idea' : 'Archive my idea'}
     </DropdownItem>,
   ];
 
@@ -68,7 +84,15 @@ export const IdeaItem = ({
               </Title>
             </FlexItem>
             <FlexItem>
-              <Button variant="secondary" isDanger={hasVoted} className={styles.voteButton}>
+              <Button
+                variant="secondary"
+                isDanger={hasVoted}
+                className={styles.voteButton}
+                onClick={async (event) => {
+                  event.preventDefault();
+                  await onVoteClick();
+                }}
+              >
                 <Text component={TextVariants.small}>{hasVoted ? 'VOTED' : 'VOTE'}</Text>
               </Button>
             </FlexItem>
@@ -79,20 +103,29 @@ export const IdeaItem = ({
               flexWrap={{ default: 'nowrap' }}
               spacer={{ default: 'spacerSm' }}
             >
-              <Flex style={{ minWidth: 0 }}>
+              <Flex style={{ minWidth: 0 }} grow={{ default: 'grow' }}>
                 <Title headingLevel="h1" className={styles.truncatedTitle}>
                   {title}
                 </Title>
               </Flex>
               <FlexItem>
-                <Dropdown
-                  toggle={<KebabToggle className="pf-u-p-0" onToggle={handleToggle} />}
-                  isOpen={isOpen}
-                  onSelect={handleToggle}
-                  isPlain
-                  dropdownItems={dropdownItems}
-                  position="left"
-                />
+                {user === userinfo.fullName && (
+                  <Dropdown
+                    toggle={
+                      <KebabToggle
+                        className="pf-u-p-0"
+                        onToggle={handleToggle}
+                        onClick={(event) => event.preventDefault()}
+                      />
+                    }
+                    isOpen={isOpen}
+                    onSelect={handleToggle}
+                    isPlain
+                    dropdownItems={dropdownItems}
+                    position="left"
+                    onClick={(event) => event.preventDefault()}
+                  />
+                )}
               </FlexItem>
             </Flex>
             <Flex alignItems={{ default: 'alignItemsCenter' }}>

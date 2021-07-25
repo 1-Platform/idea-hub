@@ -18,7 +18,7 @@ export const Footer = (): JSX.Element => {
         </FlexItem>
       </Flex>
       <FlexItem spacer={{ default: 'spacerLg' }}>
-        <img src="/images/redhat.svg" alt="Red Hat" />
+        <img src="images/redhat.svg" alt="Red Hat" />
       </FlexItem>
     </Flex>
   );

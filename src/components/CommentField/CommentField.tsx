@@ -8,7 +8,7 @@ import { CommentButton } from './components/CommentButton';
 interface Props {
   commenterName: string;
   avatar?: string;
-  createdAt: string;
+  createdAt: number;
 }
 
 interface CompoundComponents {

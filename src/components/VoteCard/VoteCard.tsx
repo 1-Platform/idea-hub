@@ -17,7 +17,7 @@ import { Button as VoteCardUtilButton } from './components';
 interface Props {
   voteCount: number;
   onVoteClick?: () => void | Promise<void>;
-  voter: string;
+  authorName: string;
   hasVoted?: boolean;
 }
 
@@ -28,7 +28,7 @@ interface CompoundComponents {
 export const VoteCard: FC<Props> & CompoundComponents = ({
   voteCount,
   onVoteClick,
-  voter,
+  authorName,
   hasVoted,
   children,
 }) => {
@@ -77,7 +77,7 @@ export const VoteCard: FC<Props> & CompoundComponents = ({
             </Text>
           </FlexItem>
           <FlexItem>
-            <Title headingLevel="h6">{voter}</Title>
+            <Title headingLevel="h6">{authorName}</Title>
           </FlexItem>
           <Flex
             justifyContent={{ default: 'justifyContentCenter' }}

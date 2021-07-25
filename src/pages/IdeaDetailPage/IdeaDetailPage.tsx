@@ -1,4 +1,5 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -14,16 +15,108 @@ import {
   Title,
   TitleSizes,
   Alert,
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateBody,
 } from '@patternfly/react-core';
-import { LongArrowAltLeftIcon, ShareIcon } from '@patternfly/react-icons';
+import { CubesIcon, LongArrowAltLeftIcon, ShareIcon } from '@patternfly/react-icons';
 
 import { VoteCard } from 'components';
 import { CommentsContainer } from 'containers/CommentsContainer';
 import { postedOnFormater } from 'utils/postedOnFormater';
-import { Link } from 'react-router-dom';
+import { usePouchDB } from 'context';
+import { CommentDoc, DesignDoc, IdeaDoc } from 'pouchDB/types';
+import { onIdeaChange } from './ideaDetailPage.helper';
 
 export const IdeaDetailPage = (): JSX.Element => {
-  const postedOn = useMemo(() => postedOnFormater('6/12/2021'), []);
+  const { idea, vote, db } = usePouchDB();
+  const [ideaDetails, setIdeaDetails] = useState<
+    PouchDB.Core.ExistingDocument<IdeaDoc & PouchDB.Core.AllDocsMeta> | null | Record<string, never>
+  >(null);
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    const dbChanges = db
+      .changes<IdeaDoc | CommentDoc>({
+        since: 'now',
+        live: true,
+        include_docs: true,
+        filter: DesignDoc.IdeaDetailPageFilter,
+        query_params: {
+          ideaId: id,
+        },
+      })
+      .on('change', async function ({ doc }) {
+        // change.id contains the doc id, change.doc contains the doc
+        if (doc && doc?.type === 'idea') {
+          const updatedIdeaDetails = await onIdeaChange(doc, idea);
+          setIdeaDetails(updatedIdeaDetails);
+        }
+      })
+      .on('error', function (err) {
+        console.error(err);
+        window.OpNotification.warning({
+          subject: 'Comment live change registration failed',
+          body: err.message,
+        });
+      });
+    return () => dbChanges.cancel();
+  }, [id, db, idea]);
+
+  const handleIdeaDetailsFetch = useCallback(async () => {
+    try {
+      const ideaDetailsFetched = await idea.getAnIdeaById(id);
+      setIdeaDetails(ideaDetailsFetched ? ideaDetailsFetched : {});
+    } catch (error) {
+      console.error(error);
+      window.OpNotification.danger({
+        subject: 'Error while loading ideas',
+        body: error.message,
+      });
+    }
+  }, [id, idea]);
+
+  useEffect(() => {
+    window.OpAuthHelper.onLogin(() => handleIdeaDetailsFetch());
+  }, [handleIdeaDetailsFetch]);
+
+  const postedOn = useMemo(
+    () => postedOnFormater(ideaDetails?.createdAt || ''),
+    [ideaDetails?.createdAt]
+  );
+
+  const handleVoteClick = useCallback(
+    async (hasVoted: boolean, ideaId: string) => {
+      try {
+        const res = hasVoted ? await vote.deleteVote(ideaId) : await vote.createVote(ideaId);
+        console.log({ res });
+      } catch (error) {
+        console.error(error);
+        window.OpNotification.danger({
+          subject: 'Voting failed',
+          body: error.message,
+        });
+      }
+    },
+    [vote]
+  );
+
+  if (!ideaDetails) {
+    return <div>Loading...</div>;
+  }
+
+  if (Object.keys(ideaDetails).length === 0 && ideaDetails.constructor === Object) {
+    return (
+      <EmptyState>
+        <EmptyStateIcon icon={CubesIcon} />
+        <Title headingLevel="h4" size="lg">
+          No idea found
+        </Title>
+        <EmptyStateBody>Please check the blog id</EmptyStateBody>
+      </EmptyState>
+    );
+  }
 
   return (
     <Grid hasGutter style={{ gap: '60px' }}>
@@ -31,7 +124,7 @@ export const IdeaDetailPage = (): JSX.Element => {
         <Flex direction={{ default: 'column' }} flexWrap={{ default: 'nowrap' }}>
           <Flex spaceItems={{ default: 'spaceItems2xl' }}>
             <FlexItem>
-              <Link to="/">
+              <Link to="..">
                 <Button
                   variant="link"
                   icon={<LongArrowAltLeftIcon />}
@@ -44,7 +137,7 @@ export const IdeaDetailPage = (): JSX.Element => {
             <FlexItem>
               <Breadcrumb className="pf-u-color-400">
                 <BreadcrumbItem>Ideas</BreadcrumbItem>
-                <BreadcrumbItem to="#">#03</BreadcrumbItem>
+                <BreadcrumbItem>{ideaDetails?.ideaId}</BreadcrumbItem>
               </Breadcrumb>
             </FlexItem>
             <FlexItem>
@@ -55,39 +148,40 @@ export const IdeaDetailPage = (): JSX.Element => {
             </FlexItem>
           </Flex>
           <FlexItem>
-            <Alert
-              variant="warning"
-              title="This idea has been archived and is read-only."
-              isInline
-            />
+            {ideaDetails.isArchived && (
+              <Alert
+                variant="warning"
+                title="This idea has been archived and is read-only."
+                isInline
+              />
+            )}
           </FlexItem>
           <FlexItem>
             <Title headingLevel="h1" size={TitleSizes['2xl']}>
-              An internal platform for associate run projects and experimentation
+              {ideaDetails.title}
             </Title>
           </FlexItem>
           <FlexItem spacer={{ default: 'spacerXl' }}>
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras volutpat egestas sem.
-              Fusce cursus eros risus, in rutrum arcu luctus ullamcorper. Class aptent taciti
-              sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Integer vel
-              dui vel ex rhoncus tempus eu vel nibh. Mauris laoreet ligula sed aliquet fringilla. In
-              hac habitasse platea dictumst. Curabitur ullamcorper tellus nec ante commodo
-              dignissim. Ut ullamcorper metus enim, a aliquam elit facilisis ut. Nam eu sem sed dui
-              facilisis tincidunt quis eu ligula. Nulla malesuada facilisis libero, sit amet
-              scelerisque lacus pulvinar vitae. Nulla blandit maximus nunc, id gravida leo feugiat
-              ut.
-            </Text>
+            <Text>{ideaDetails.description}</Text>
           </FlexItem>
           <Flex grow={{ default: 'grow' }} className="pf-u-mb-4xl">
-            <CommentsContainer />
+            <CommentsContainer
+              ideaDetails={
+                ideaDetails as PouchDB.Core.ExistingDocument<IdeaDoc & PouchDB.Core.AllDocsMeta>
+              }
+            />
           </Flex>
         </Flex>
       </GridItem>
       <GridItem span={3}>
         <Flex direction={{ default: 'column' }}>
           <FlexItem>
-            <VoteCard voteCount={100} voter="Mayur Deshmukh">
+            <VoteCard
+              voteCount={ideaDetails.votes}
+              authorName={ideaDetails.author}
+              hasVoted={ideaDetails.hasVoted}
+              onVoteClick={() => handleVoteClick(ideaDetails.hasVoted, ideaDetails._id)}
+            >
               <VoteCard.Button variant="link" icon={<ShareIcon />} style={{ color: 'unset' }}>
                 Share
               </VoteCard.Button>
@@ -98,10 +192,12 @@ export const IdeaDetailPage = (): JSX.Element => {
               <Title headingLevel="h6">Related tags:</Title>
             </div>
             <ChipGroup>
-              {['Apps', 'Development Tools'].map((category) => (
-                <Chip key={category} isReadOnly>
-                  {category}
-                </Chip>
+              {ideaDetails.tags.map((category) => (
+                <Link to={`..?category=${category}`} key={category}>
+                  <Chip isReadOnly className="capitalize">
+                    {category}
+                  </Chip>
+                </Link>
               ))}
             </ChipGroup>
           </FlexItem>
@@ -110,14 +206,18 @@ export const IdeaDetailPage = (): JSX.Element => {
               <Title headingLevel="h6">Other links:</Title>
             </FlexItem>
             <FlexItem>
-              <Button variant="plain" className="pf-u-p-0">
-                More ideas from Mayur
-              </Button>
+              <Link to={`..?author=${ideaDetails.authorId}`}>
+                <Button variant="plain" className="pf-u-p-0">
+                  {`More ideas from ${ideaDetails.author}`}
+                </Button>
+              </Link>
             </FlexItem>
             <FlexItem>
-              <Button variant="plain" className="pf-u-p-0">
-                More popular ideas
-              </Button>
+              <Link to="..?popular=true">
+                <Button variant="plain" className="pf-u-p-0">
+                  More popular ideas
+                </Button>
+              </Link>
             </FlexItem>
           </Flex>
         </Flex>

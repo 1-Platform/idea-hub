@@ -3,11 +3,13 @@
  * Reference: https://www.geeksforgeeks.org/how-to-calculate-the-number-of-days-between-two-dates-in-javascript
  * @returns {String} : 2 days ago, 2 months ago, 5 years ago
  */
-export const postedOnFormater = (postedOn: string): string => {
+export const postedOnFormater = (postedOn: string | number): string => {
   const present = new Date().getTime(); //Gets the number of milliseconds
   const inputDate = new Date(postedOn).getTime();
   const daysDiff = (present - inputDate) / (1000 * 3600 * 24);
-  if (daysDiff < 30) {
+  if (daysDiff < 1) {
+    return 'today';
+  } else if (daysDiff < 30) {
     const day = Math.round(daysDiff);
     return `${day} ${day > 1 ? 'days' : 'day'} ago`;
   } else if (daysDiff < 365) {

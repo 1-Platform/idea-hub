@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 type useToggleReturn = {
   handleOpen: () => void;
@@ -14,17 +14,17 @@ type useToggleReturn = {
 export const useToggle = (initialState = false): useToggleReturn => {
   const [isOpen, setIsOpen] = useState(initialState);
 
-  const handleOpen = (): void => {
+  const handleOpen = useCallback((): void => {
     setIsOpen(true);
-  };
+  }, []);
 
-  const handleClose = (): void => {
+  const handleClose = useCallback((): void => {
     setIsOpen(false);
-  };
+  }, []);
 
-  const handleToggle = (): void => {
+  const handleToggle = useCallback((): void => {
     setIsOpen((isOpen) => !isOpen);
-  };
+  }, []);
 
   return {
     handleOpen,
