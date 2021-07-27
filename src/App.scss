@@ -1,7 +1,8 @@
 @import '@patternfly/react-styles/css/utilities/Spacing/spacing.css',
   '@patternfly/react-styles/css/utilities/Text/text.css',
   '@patternfly/react-styles/css/utilities/Alignment/alignment.css',
-  '@patternfly/react-styles/css/utilities/Sizing/sizing.css';
+  '@patternfly/react-styles/css/utilities/Sizing/sizing.css',
+  '@patternfly/react-styles/css/utilities/Display/display.css';
 
 html,
 body,
@@ -9,6 +10,10 @@ body,
   width: 100%;
   padding: 0;
   margin: 0;
+}
+
+#root {
+  height: inherit;
 }
 
 .pf-c-breadcrumb__link {
@@ -68,6 +73,14 @@ a {
   padding: 4px 12px;
 }
 
+.pf-c-backdrop {
+  --pf-c-backdrop--ZIndex: 9999;
+}
+
 .rounded {
   border-radius: 8px;
+}
+
+.capitalize {
+  text-transform: capitalize;
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface usePopUpProps {
   name: Readonly<string>;
@@ -42,17 +42,17 @@ export const usePopUp = <T extends Readonly<string[]> | usePopUpProps[]>(
     ) as usePopUpState<T> // to override generic string return type of the function
   );
 
-  const handlePopUpOpen = (popUpName: keyof usePopUpState<T>, data?: unknown) => {
+  const handlePopUpOpen = useCallback((popUpName: keyof usePopUpState<T>, data?: unknown) => {
     setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: true, data } }));
-  };
+  }, []);
 
-  const handlePopUpClose = (popUpName: keyof usePopUpState<T>) => {
+  const handlePopUpClose = useCallback((popUpName: keyof usePopUpState<T>) => {
     setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: false } }));
-  };
+  }, []);
 
-  const handlePopUpToggle = (popUpName: keyof usePopUpState<T>) => {
+  const handlePopUpToggle = useCallback((popUpName: keyof usePopUpState<T>) => {
     setPopUp((popUp) => ({ ...popUp, [popUpName]: { isOpen: !popUp[popUpName].isOpen } }));
-  };
+  }, []);
 
   return {
     popUp,

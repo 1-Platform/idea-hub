@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Button,
   Grid,
@@ -8,37 +9,170 @@ import {
   Text,
   Flex,
   FlexItem,
+  Modal,
+  ModalVariant,
+  EmptyState,
+  EmptyStateIcon,
+  Title,
+  EmptyStateBody,
 } from '@patternfly/react-core';
+import { CubesIcon } from '@patternfly/react-icons';
 
-import { useInfiniteScroll, usePopUp } from 'hooks';
+import { useInfiniteScroll, usePopUp, useQuery } from 'hooks';
+import { CreateIdeaDoc, DesignDoc, GetList, IdeaDoc, VoteDoc } from 'pouchDB/types';
+import { usePouchDB } from 'context';
 
 import { MenuTab } from './components/MenuTab';
 import { Categories } from './components/Categories';
 import { IdeaItem } from './components/IdeaItem';
-import { NewIdeaModal } from './components/NewIdeaModal';
-
+import { IdeaCreateUpdateContainer } from './components/IdeaCreateUpdateContainer';
 import styles from './homePage.module.scss';
-import { Link } from 'react-router-dom';
+import { onIdeaChange } from './homePage.helper';
+import { Filter, TabType } from './types';
 
-const MAXIMUM_POSTS = 50;
-const EACH_LOADING = 10;
+const DOCS_ON_EACH_LOAD = 20;
 
 export const HomePage = (): JSX.Element => {
   const { popUp, handlePopUpOpen, handlePopUpClose } = usePopUp(['newIdea'] as const);
-  const [ideas, setIdeas] = useState<number[]>(Array(10).fill(0));
+  const [ideas, setIdeas] = useState<GetList<IdeaDoc>>({ hasNextPage: false, docs: [] });
+  const { idea, tag, vote, db } = usePouchDB();
+  const query = useQuery();
+  const useInfo = window?.OpAuthHelper?.getUserInfo();
+
+  const authorQuery = query.get('author');
+  const categoryQuery = query.get('category') as string;
+  const isPopularQuery = query.get('popular');
+  const [tab, setTab] = useState<TabType>(
+    isPopularQuery ? { tabIndex: 1, tabName: 'popular' } : { tabIndex: 0, tabName: 'recent' }
+  );
 
   const { fetchState, handleFetchState } = useInfiniteScroll(() => {
     // setTimeout is applied to debounce the request for efficiency
-    const fetchIdeaBounce = setTimeout(() => {
+    const fetchIdeaBounce = setTimeout(async () => {
       clearInterval(fetchIdeaBounce);
-      if (ideas.length < MAXIMUM_POSTS) {
-        setIdeas((ideas) => [...ideas, ...Array(EACH_LOADING).fill(0)]);
-      } else {
-        handleFetchState('isFetchDisabled', true);
+      if (ideas.hasNextPage && ideas.cb) {
+        const { docs, hasNextPage, cb } = await ideas.cb();
+        setIdeas((ideas) => ({ hasNextPage, cb, docs: [...ideas.docs, ...docs] }));
       }
       handleFetchState('isFetching', false);
     }, 1000);
   });
+
+  const handleFetchIdeaList = useCallback(
+    async (type: 'recent' | 'popular', filter: Filter) => {
+      try {
+        let ideaList: GetList<IdeaDoc> = { hasNextPage: true, docs: [] };
+        if (type === 'popular') {
+          ideaList = await idea.getIdeaListByPopular({ limit: DOCS_ON_EACH_LOAD, filter });
+        } else {
+          ideaList = await idea.getIdeaListByRecent({ limit: DOCS_ON_EACH_LOAD, filter });
+        }
+        setIdeas(ideaList);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [idea]
+  );
+
+  useEffect(() => {
+    window.OpAuthHelper.onLogin(() => {
+      handleFetchIdeaList(tab.tabName, { author: authorQuery, category: categoryQuery });
+    });
+  }, [tab.tabName, handleFetchIdeaList, authorQuery, categoryQuery]);
+
+  useEffect(() => {
+    const dbChanges = db
+      .changes<IdeaDoc | VoteDoc>({
+        since: 'now',
+        live: true,
+        include_docs: true,
+        filter: DesignDoc.HomePageFilter,
+        query_params: {
+          user: useInfo?.rhatUUID,
+        },
+      })
+      .on('change', async function ({ doc }) {
+        // change.id contains the doc id, change.doc contains the doc
+        if (doc && doc?.type === 'idea') {
+          const newIdeaList = await onIdeaChange(doc, ideas.docs, idea);
+          setIdeas((ideas) => ({ ...ideas, docs: newIdeaList }));
+        }
+      })
+      .on('error', function (err) {
+        console.error(err);
+        window.OpNotification.warning({
+          subject: 'Idea live change registration failed',
+          body: err.message,
+        });
+      });
+    return () => dbChanges.cancel();
+  }, [ideas.docs, idea, db, useInfo?.rhatUUID]);
+
+  const handleTabChange = useCallback((tabIndex: number) => {
+    setTab(tabIndex === 1 ? { tabIndex, tabName: 'popular' } : { tabIndex, tabName: 'recent' });
+  }, []);
+
+  const handleCreateOrUpdateIdeaDoc = useCallback(
+    async (data: CreateIdeaDoc, createdTags: string[], isUpdate: boolean) => {
+      try {
+        await tag.createNewTags(createdTags);
+        if (isUpdate) {
+          await idea.updateAnIdea(
+            (
+              popUp.newIdea.data as PouchDB.Core.ExistingDocument<
+                IdeaDoc & PouchDB.Core.AllDocsMeta
+              >
+            )?._id,
+            data
+          );
+        } else {
+          await idea.createNewIdea(data);
+        }
+        handlePopUpClose('newIdea');
+      } catch (error) {
+        console.error(error);
+        window.OpNotification.danger({
+          subject: `Error on ${isUpdate ? 'creation' : 'updation'} of idea`,
+          body: error.message,
+        });
+      }
+    },
+    [handlePopUpClose, popUp.newIdea.data, idea, tag]
+  );
+
+  const handleVoteClick = useCallback(
+    async (hasVoted: boolean, ideaId: string) => {
+      try {
+        hasVoted ? await vote.deleteVote(ideaId) : await vote.createVote(ideaId);
+      } catch (error) {
+        console.error(error);
+        window.OpNotification.danger({
+          subject: 'Voting failed',
+          body: error.message,
+        });
+      }
+    },
+    [vote]
+  );
+
+  const handleArchiveButtonClick = useCallback(
+    async (ideaId: string) => {
+      try {
+        const isArchived = await idea.toggleArchiveIdea(ideaId);
+        window.OpNotification.success({
+          subject: `Successfully ${isArchived ? 'archived' : 'unarchived'}`,
+        });
+      } catch (error) {
+        console.error(error);
+        window.OpNotification.danger({
+          subject: 'Archiving failed',
+          body: error.message,
+        });
+      }
+    },
+    [idea]
+  );
 
   return (
     <>
@@ -62,24 +196,52 @@ export const HomePage = (): JSX.Element => {
         <GridItem span={9}>
           <Flex direction={{ default: 'column' }} flexWrap={{ default: 'nowrap' }}>
             <FlexItem className={styles['sticky-title']}>
-              <MenuTab />
+              <MenuTab handleTabChange={handleTabChange} tab={tab} />
             </FlexItem>
+            {ideas.docs.length === 0 && (
+              <EmptyState>
+                <EmptyStateIcon icon={CubesIcon} />
+                <Title headingLevel="h4" size="lg">
+                  No ideas found
+                </Title>
+                <EmptyStateBody>
+                  You have an idea - Let&apos;s share it with everyone
+                </EmptyStateBody>
+              </EmptyState>
+            )}
             <FlexItem>
               <Stack hasGutter>
-                {ideas.map((_, index) => (
-                  <StackItem key={`idea-${index}`} className="pf-u-mx-xs">
-                    <Link to="/idea/123456789">
-                      <IdeaItem
-                        voteCount={100}
-                        commentCount={2}
-                        hasVoted={!index}
-                        postedOn="6/12/2021"
-                        user="Mayur Deshmukh"
-                        title="An internal platform for associate run projects and experimentation"
-                      />
-                    </Link>
-                  </StackItem>
-                ))}
+                {ideas.docs.map((idea) => {
+                  const {
+                    _id,
+                    title,
+                    author,
+                    votes,
+                    comments,
+                    createdAt,
+                    hasVoted,
+                    isArchived,
+                    ideaId,
+                  } = idea;
+                  return (
+                    <StackItem key={_id} className="pf-u-mx-xs">
+                      <Link to={`${ideaId}`}>
+                        <IdeaItem
+                          voteCount={votes}
+                          commentCount={comments}
+                          postedOn={createdAt}
+                          user={author}
+                          hasVoted={hasVoted}
+                          title={title}
+                          isArchived={isArchived}
+                          onVoteClick={async () => handleVoteClick(hasVoted, _id)}
+                          onArchiveButtonClick={async () => handleArchiveButtonClick(_id)}
+                          onEditIdeaClick={() => handlePopUpOpen('newIdea', idea)}
+                        />
+                      </Link>
+                    </StackItem>
+                  );
+                })}
                 {fetchState.isFetching && (
                   <StackItem>
                     <Text className="pf-u-text-align-center">Loading more ideas...</Text>
@@ -90,10 +252,18 @@ export const HomePage = (): JSX.Element => {
           </Flex>
         </GridItem>
       </Grid>
-      <NewIdeaModal
+      <Modal
+        title="Post a new Idea!"
         isOpen={popUp.newIdea.isOpen}
-        handleModalClose={() => handlePopUpClose('newIdea')}
-      />
+        variant={ModalVariant.small}
+        onClose={() => handlePopUpClose('newIdea')}
+      >
+        <IdeaCreateUpdateContainer
+          handleModalClose={() => handlePopUpClose('newIdea')}
+          handleCreateOrUpdateIdeaDoc={handleCreateOrUpdateIdeaDoc}
+          updateDefaultValue={popUp.newIdea.data as IdeaDoc}
+        />
+      </Modal>
     </>
   );
 };

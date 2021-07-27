@@ -14,7 +14,7 @@ export const AppLayout: FC = ({ children }) => {
       <Container>
         <Flex
           direction={{ default: 'column' }}
-          className="pf-u-h-full"
+          className="pf-u-h-100"
           flexWrap={{ default: 'nowrap' }}
         >
           <FlexItem>

@@ -14,7 +14,7 @@ export const AppBanner = (): JSX.Element => {
   return (
     <Flex alignItems={{ default: 'alignItemsCenter' }}>
       <FlexItem spacer={{ default: 'spacerLg' }}>
-        <img src="/images/innovation_logo.svg" className={style.logo} alt="innovation bulb icon" />
+        <img src="images/idea_logo.svg" className={style.logo} alt="idea bulb icon" />
       </FlexItem>
       <FlexItem>
         <Title

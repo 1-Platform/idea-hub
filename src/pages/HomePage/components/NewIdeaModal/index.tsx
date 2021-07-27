@@ -1,1 +1,0 @@
-export { NewIdeaModal } from './NewIdeaModal';

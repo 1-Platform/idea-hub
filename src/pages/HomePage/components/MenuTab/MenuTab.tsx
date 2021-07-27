@@ -1,11 +1,20 @@
 import { Flex, FlexItem, Tab, Tabs, TabTitleText, TextInput } from '@patternfly/react-core';
+import { TabType } from 'pages/HomePage/types';
 
-export const MenuTab = (): JSX.Element => {
+interface Props {
+  handleTabChange: (tabIndex: number) => void;
+  tab: TabType;
+}
+
+export const MenuTab = ({ handleTabChange, tab }: Props): JSX.Element => {
   return (
     <Flex className="pf-u-h-full" alignItems={{ default: 'alignItemsCenter' }}>
       <Flex flex={{ default: 'flex_2' }}>
         <FlexItem>
-          <Tabs defaultActiveKey={0}>
+          <Tabs
+            onSelect={(event, tabIndex) => handleTabChange(tabIndex as number)}
+            activeKey={tab.tabIndex}
+          >
             <Tab eventKey={0} title={<TabTitleText>Recent</TabTitleText>}></Tab>
             <Tab eventKey={1} title={<TabTitleText>Popular</TabTitleText>}></Tab>
           </Tabs>
