@@ -30,6 +30,14 @@ run `npm test`
 
 run `npm run lint:fix`
 
+## Load remote couchdb with design documents and default tag
+
+run `npm run generate:couchdb-documents`: To save both design documents and default tags to couchdb
+
+run `nom run generate:design-doc`: To save design documents to couchdb
+
+run `nom run generate:default-tags`: To save default tags to couchdb
+
 ## 🤝 Contributors
 
 👤 **Akhil Mohan** [akhilmhdh](https://github.com/akhilmhdh)
