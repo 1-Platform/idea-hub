@@ -4,3 +4,4 @@ export { useInfiniteScroll } from './useInfiniteScroll';
 export { useFormSelect } from './useFormSelect';
 export { useQuery } from './useQuery';
 export { useDebounce } from './useDebounce';
+export { useStateRef } from './useStateRef';

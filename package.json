@@ -18,14 +18,13 @@
     "@testing-library/user-event": "^13.1.9",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.12.2",
+    "@types/pouchdb-browser": "^6.1.3",
     "@types/react": "^17.0.11",
     "@types/react-dom": "^17.0.7",
-    "dotenv": "^10.0.0",
     "history": "^5.0.0",
     "nanoid": "^3.1.23",
     "node-sass": "^6.0.1",
-    "pouchdb": "^7.2.2",
-    "pouchdb-adapter-http": "^7.2.2",
+    "pouchdb-browser": "^7.2.2",
     "pouchdb-debug": "^7.2.1",
     "pouchdb-find": "^7.2.2",
     "react": "^17.0.2",
@@ -45,9 +44,9 @@
     "lint": "eslint --ext .ts,.tsx src/",
     "lint:fix": "eslint --ext .ts,.tsx src/ --fix",
     "prepare": "husky install",
-    "generate:design-doc": "ts-node -P scripts/tsconfig.json scripts/generate-couchdb-design-documents.ts",
-    "generate:default-tags": "ts-node -P scripts/tsconfig.json scripts/generate-couchdb-default-tags.ts",
-    "generate:couchdb-documents": "npm run generate:design-doc && npm run generate:default-tags"
+    "migrate:design-doc": "ts-node -P scripts/tsconfig.json scripts/migrate-couchdb-design-documents.ts",
+    "migrate:default-tags": "ts-node -P scripts/tsconfig.json scripts/migrate-couchdb-default-tags.ts",
+    "migrate:all": "npm run migrate:design-doc && npm run migrate:default-tags"
   },
   "lint-staged": {
     "*.{ts,tsx}": "eslint --cache --fix"
@@ -71,7 +70,8 @@
     ]
   },
   "devDependencies": {
-    "@types/pouchdb": "^6.4.0",
+    "@types/dotenv-safe": "^8.1.2",
+    "@types/pouchdb-node": "^6.1.4",
     "@types/react-test-renderer": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.26.1",
     "@typescript-eslint/parser": "^4.26.1",
@@ -82,8 +82,10 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
+    "pouchdb-node": "^7.2.2",
     "prettier": "^2.3.1",
     "react-test-renderer": "^17.0.2",
-    "ts-node": "^10.2.1"
+    "ts-node": "^10.2.1",
+    "dotenv-safe": "^8.2.0"
   }
 }

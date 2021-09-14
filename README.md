@@ -13,6 +13,7 @@ Idea Hub is a place to share ideas and innovations, with feedbacks from other us
    `git clone https://github.com/1-Platform/idea-hub.git && cd idea-hub`
 2. Install Dependencies
    `npm install`
+3. Copy `.env.example` to `.env.local` and fill necessary fields
 
 ## Start SPA
 
@@ -32,11 +33,11 @@ run `npm run lint:fix`
 
 ## Load remote couchdb with design documents and default tag
 
-run `npm run generate:couchdb-documents`: To save both design documents and default tags to couchdb
+run `npm run migrate:all`: To save both design documents and default tags to couchdb
 
-run `nom run generate:design-doc`: To save design documents to couchdb
+run `npm run migrate:design-doc`: To save design documents to couchdb
 
-run `nom run generate:default-tags`: To save default tags to couchdb
+run `npm run migrate:default-tags`: To save default tags to couchdb
 
 ## 🤝 Contributors
 

@@ -2,7 +2,6 @@ import { ReactNode, useRef, useCallback, useEffect, useState } from 'react';
 
 import {
   Avatar,
-  Button,
   Bullseye,
   Dropdown,
   DropdownItem,
@@ -19,12 +18,13 @@ import {
   EmptyState,
   EmptyStateIcon,
   EmptyStateBody,
+  DropdownToggle,
 } from '@patternfly/react-core';
 import { SortAmountDownIcon, CubesIcon } from '@patternfly/react-icons';
 import { Controller, useForm } from 'react-hook-form';
 
 import { CommentField } from 'components';
-import { useInfiniteScroll, useToggle } from 'hooks';
+import { useInfiniteScroll, useStateRef, useToggle } from 'hooks';
 import { usePouchDB } from 'context';
 import { CommentDoc, DesignDoc, GetList, IdeaDoc } from 'pouchDB/types';
 import { onCommentChange } from './commentsContainer.helper';
@@ -45,7 +45,7 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
   const { isOpen, handleToggle } = useToggle(false);
   const [sortOrder, setSortOrder] = useState<0 | 1>(0);
   const { control, handleSubmit, reset } = useForm<FormData>();
-  const [commentDoc, setCommentDoc] = useState<GetList<CommentDoc>>({
+  const [commentDoc, setCommentDoc, commentDocRef] = useStateRef<GetList<CommentDoc>>({
     hasNextPage: false,
     docs: [],
   });
@@ -75,13 +75,7 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
           ideaId,
         },
       })
-      .on('change', async function ({ doc }) {
-        // change.id contains the doc id, change.doc contains the doc
-        if (doc && doc?.type === 'comment') {
-          const newCommentList = await onCommentChange(doc, commentDoc.docs, comment);
-          setCommentDoc((comments) => ({ ...comments, docs: newCommentList }));
-        }
-      })
+      .on('change', handleCommentFeedChange)
       .on('error', function (err) {
         console.error(err);
         window.OpNotification.warning({
@@ -90,7 +84,19 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
         });
       });
     return () => dbChanges.cancel();
-  }, [comment, commentDoc.docs, ideaId, db]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ideaId]);
+
+  const handleCommentFeedChange = useCallback(
+    async ({ doc }: PouchDB.Core.ChangesResponseChange<IdeaDoc | CommentDoc>) => {
+      if (doc && doc?.type === 'comment') {
+        const newCommentList = await onCommentChange(doc, commentDocRef.current.docs, comment);
+        setCommentDoc((comments) => ({ ...comments, docs: newCommentList }));
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [commentDoc.docs]
+  );
 
   useEffect(() => {
     window.OpAuthHelper.onLogin(() => handleFetchComments(sortOrder));
@@ -121,6 +127,7 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
         });
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [comment, ideaId]
   );
 
@@ -204,15 +211,14 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
             <Bullseye>
               <Dropdown
                 toggle={
-                  <Button
-                    variant="link"
+                  <DropdownToggle
                     className="pf-u-p-0 pf-u-color-400"
-                    onClick={handleToggle}
-                    icon={<SortAmountDownIcon />}
-                    iconPosition="right"
+                    onToggle={handleToggle}
+                    toggleIndicator={SortAmountDownIcon}
+                    isPlain
                   >
                     Sort by
-                  </Button>
+                  </DropdownToggle>
                 }
                 isOpen={isOpen}
                 onSelect={handleToggle}

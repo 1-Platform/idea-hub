@@ -77,6 +77,11 @@ a {
   --pf-c-backdrop--ZIndex: 9999;
 }
 
+.pf-c-select__menu {
+  overflow: auto;
+  max-height: 200px;
+}
+
 .rounded {
   border-radius: 8px;
 }

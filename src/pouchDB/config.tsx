@@ -1,4 +1,5 @@
-export const POUCHDB_DB_NAME = process.env.POUCHDB_DB_NAME || 'idea-hub';
+export const POUCHDB_DB_NAME = process.env.REACT_APP_POUCH_DB_NAME || 'ideahub';
+export const POUCHDB_DB_URL = `${process.env.REACT_APP_POUCH_DB_URL}/${POUCHDB_DB_NAME}`;
 
 const indexDetails = [
   {
@@ -26,9 +27,11 @@ const indexDetails = [
 
 export const pouchDBIndexCreator = async (db: PouchDB.Database): Promise<void> => {
   try {
-    indexDetails.map(async (el) => {
-      await db.createIndex(el);
-    });
+    await Promise.all(
+      indexDetails.map(async (el) => {
+        await db.createIndex(el);
+      })
+    );
   } catch (error) {
     console.error(error);
   }

@@ -1,26 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { CSSProperties, useEffect, useState, useCallback } from 'react';
+import { CSSProperties, useCallback } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
 import { Menu, MenuList, MenuGroup, MenuItem, Split, SplitItem } from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import { useQuery } from 'hooks';
-import { usePouchDB } from 'context';
-import { TagDoc } from 'pouchDB/types';
+import { TagCount } from 'pages/HomePage/types';
 
-interface TagCount {
-  isLoading: boolean;
-  data: Array<{
-    id: any;
-    key: any;
-    value: any;
-    doc?: PouchDB.Core.ExistingDocument<TagDoc & PouchDB.Core.AllDocsMeta>;
-  }>;
+interface Props {
+  tags: TagCount;
 }
 
-export const Categories = (): JSX.Element => {
-  const { tag } = usePouchDB();
-  const [tagCount, setTagCount] = useState<TagCount>({ isLoading: true, data: [] });
+export const Categories = ({ tags }: Props): JSX.Element => {
   const userInfo = window?.OpAuthHelper?.getUserInfo();
 
   // url manipulation hooks
@@ -28,23 +18,6 @@ export const Categories = (): JSX.Element => {
   const query = useQuery();
   const author = query.get('author');
   const category = query.get('category');
-
-  useEffect(() => {
-    handleFetchTags();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleFetchTags = useCallback(async () => {
-    try {
-      const { rows } = await tag.getTagCounts();
-      rows.sort((a, b) => b.value - a.value).splice(10);
-      setTagCount({ isLoading: false, data: rows });
-    } catch (error) {
-      setTagCount({ isLoading: false, data: [] });
-      console.error(error);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleMenuClick = useCallback(
     (key: 'author' | 'category', value: string | null) => {
@@ -85,7 +58,7 @@ export const Categories = (): JSX.Element => {
       </MenuGroup>
       <MenuGroup label="Categories">
         <MenuList>
-          {tagCount.data.map(({ key, value }) => (
+          {tags.data.map(({ key, value }) => (
             <MenuItem
               key={key}
               onClick={() => handleMenuClick('category', category === key ? null : key)}

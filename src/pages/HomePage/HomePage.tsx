@@ -18,7 +18,7 @@ import {
 } from '@patternfly/react-core';
 import { CubesIcon } from '@patternfly/react-icons';
 
-import { useInfiniteScroll, usePopUp, useQuery } from 'hooks';
+import { useInfiniteScroll, usePopUp, useQuery, useStateRef } from 'hooks';
 import { CreateIdeaDoc, DesignDoc, GetList, IdeaDoc, VoteDoc } from 'pouchDB/types';
 import { usePouchDB } from 'context';
 
@@ -28,13 +28,17 @@ import { IdeaItem } from './components/IdeaItem';
 import { IdeaCreateUpdateContainer } from './components/IdeaCreateUpdateContainer';
 import styles from './homePage.module.scss';
 import { onIdeaChange } from './homePage.helper';
-import { Filter, TabType } from './types';
+import { Filter, TabType, TagCount } from './types';
 
 const DOCS_ON_EACH_LOAD = 20;
 
 export const HomePage = (): JSX.Element => {
   const { popUp, handlePopUpOpen, handlePopUpClose } = usePopUp(['newIdea'] as const);
-  const [ideas, setIdeas] = useState<GetList<IdeaDoc>>({ hasNextPage: false, docs: [] });
+  const [ideas, setIdeas, ideasRef] = useStateRef<GetList<IdeaDoc>>({
+    hasNextPage: false,
+    docs: [],
+  });
+  const [tagCount, setTagCount] = useState<TagCount>({ isLoading: true, data: [] });
   const { idea, tag, vote, db } = usePouchDB();
   const query = useQuery();
   const useInfo = window?.OpAuthHelper?.getUserInfo();
@@ -72,15 +76,35 @@ export const HomePage = (): JSX.Element => {
         console.error(error);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [idea]
   );
+
+  const handleFetchTags = useCallback(async () => {
+    try {
+      const { rows } = await tag.getTagCounts();
+      rows.sort((a, b) => b.value - a.value).splice(10);
+      setTagCount({ isLoading: false, data: rows });
+    } catch (error) {
+      setTagCount({ isLoading: false, data: [] });
+      console.error(error);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     window.OpAuthHelper.onLogin(() => {
       handleFetchIdeaList(tab.tabName, { author: authorQuery, category: categoryQuery });
+      handleFetchTags();
     });
-  }, [tab.tabName, handleFetchIdeaList, authorQuery, categoryQuery]);
+  }, [tab.tabName, handleFetchIdeaList, authorQuery, categoryQuery, handleFetchTags]);
 
+  /**
+   * Couchdb changes feed
+   * Why ref state -> To avoid registering back and forth event each time on state change
+   * change event is getting reflected on ideaList state which causes re-registration each time
+   * To avoid this and making it one time registration, I have used reference to avoid stale state
+   */
   useEffect(() => {
     const dbChanges = db
       .changes<IdeaDoc | VoteDoc>({
@@ -92,13 +116,7 @@ export const HomePage = (): JSX.Element => {
           user: useInfo?.rhatUUID,
         },
       })
-      .on('change', async function ({ doc }) {
-        // change.id contains the doc id, change.doc contains the doc
-        if (doc && doc?.type === 'idea') {
-          const newIdeaList = await onIdeaChange(doc, ideas.docs, idea);
-          setIdeas((ideas) => ({ ...ideas, docs: newIdeaList }));
-        }
-      })
+      .on('change', onIdeaChangeCB)
       .on('error', function (err) {
         console.error(err);
         window.OpNotification.warning({
@@ -107,7 +125,20 @@ export const HomePage = (): JSX.Element => {
         });
       });
     return () => dbChanges.cancel();
-  }, [ideas.docs, idea, db, useInfo?.rhatUUID]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onIdeaChangeCB = useCallback(
+    async ({ doc }: PouchDB.Core.ChangesResponseChange<IdeaDoc | VoteDoc>) => {
+      if (doc && doc?.type === 'idea') {
+        await handleFetchTags();
+        const newIdeaList = await onIdeaChange(doc, ideasRef.current.docs, idea);
+        setIdeas((ideas) => ({ ...ideas, docs: newIdeaList }));
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [ideas.docs]
+  );
 
   const handleTabChange = useCallback((tabIndex: number) => {
     setTab(tabIndex === 1 ? { tabIndex, tabName: 'popular' } : { tabIndex, tabName: 'recent' });
@@ -189,7 +220,7 @@ export const HomePage = (): JSX.Element => {
               </Button>
             </FlexItem>
             <FlexItem>
-              <Categories />
+              <Categories tags={tagCount} />
             </FlexItem>
           </Flex>
         </GridItem>

@@ -1,13 +1,11 @@
-import PouchDB from 'pouchdb';
+import PouchDB from 'pouchdb-node';
 import PouchDBFind from 'pouchdb-find';
-import pouchdbHTTPAdapter from 'pouchdb-adapter-http';
-import dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv-safe';
+dotenv.config({ path: '.env.local' });
 
 import { POUCHDB_DB_URL } from '../src/pouchDB/config';
 
 PouchDB.plugin(PouchDBFind);
-PouchDB.plugin(pouchdbHTTPAdapter);
 
 export const db = new PouchDB(POUCHDB_DB_URL, {
   skip_setup: true,
