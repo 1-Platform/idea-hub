@@ -4,7 +4,6 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useRef } from
 import PouchDB from 'pouchdb-browser';
 import PouchDBFind from 'pouchdb-find';
 import pouchdbDebug from 'pouchdb-debug';
-import pouchdbHTTPAdapter from 'pouchdb-adapter-http';
 
 import { pouchDBIndexCreator, POUCHDB_DB_NAME, POUCHDB_DB_URL } from 'pouchDB/config';
 import { IdeaModel } from 'pouchDB/api/idea';
@@ -17,7 +16,6 @@ import { DesignDoc } from 'pouchDB/types';
 
 PouchDB.plugin(PouchDBFind);
 PouchDB.plugin(pouchdbDebug);
-PouchDB.plugin(pouchdbHTTPAdapter);
 PouchDB.debug.enable('pouchdb:find');
 const PouchDBContext = createContext<PouchDBConsumer | null>(null);
 
