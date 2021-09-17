@@ -62,7 +62,8 @@ export const IdeaDetailPage = (): JSX.Element => {
         });
       });
     return () => dbChanges.cancel();
-  }, [id, db, idea]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const handleIdeaDetailsFetch = useCallback(async () => {
     try {
@@ -89,8 +90,7 @@ export const IdeaDetailPage = (): JSX.Element => {
   const handleVoteClick = useCallback(
     async (hasVoted: boolean, ideaId: string) => {
       try {
-        const res = hasVoted ? await vote.deleteVote(ideaId) : await vote.createVote(ideaId);
-        console.log({ res });
+        hasVoted ? await vote.deleteVote(ideaId) : await vote.createVote(ideaId);
       } catch (error) {
         console.error(error);
         window.OpNotification.danger({

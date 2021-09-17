@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Button,
   FormGroup,
   Stack,
   StackItem,
   TextInput,
-  Text,
   TextArea,
   Split,
   SplitItem,
@@ -16,7 +15,7 @@ import {
 } from '@patternfly/react-core';
 import { Controller, useForm } from 'react-hook-form';
 
-import { useFormSelect, useDebounce } from 'hooks';
+import { useFormSelect } from 'hooks';
 import { usePouchDB } from 'context';
 import { CreateNewIdea } from 'pages/HomePage/types';
 import { CreateIdeaDoc, IdeaDoc } from 'pouchDB/types';
@@ -31,13 +30,15 @@ interface Props {
   updateDefaultValue?: IdeaDoc;
 }
 
+type SearchTag = { isLoading: boolean; data: string[] };
+
 export const IdeaCreateUpdateContainer = ({
   handleModalClose,
   handleCreateOrUpdateIdeaDoc,
   updateDefaultValue,
 }: Props): JSX.Element => {
   const { tag } = usePouchDB();
-  const [searchedTags, setSearchTags] = useState<string[]>([]);
+  const [tagList, setTagList] = useState<SearchTag>({ isLoading: true, data: [] });
   // form handling hooks
   const {
     handleSubmit,
@@ -66,24 +67,24 @@ export const IdeaCreateUpdateContainer = ({
     }
   }, [updateDefaultValue, reset]);
 
-  const handleSearchTag = useCallback(
-    async (value: string | null) => {
-      if (value) {
-        const tags = await tag.getTagList(value);
-        setSearchTags(tags.docs.map((el) => el._id));
-      } else {
-        setSearchTags([]);
-      }
-    },
-    [tag]
-  );
+  useEffect(() => {
+    handleFetchTagList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const { setUnDebouncedState, isDebouncing } = useDebounce<string | null>(null, handleSearchTag);
+  const handleFetchTagList = async () => {
+    try {
+      const tags = await tag.getTagList(1000);
+      setTagList({ isLoading: false, data: tags.docs.map((el) => el._id) });
+    } catch (error) {
+      setTagList({ isLoading: false, data: [] });
+      window.OpNotification.danger({ subject: 'Fetching tag failed' });
+    }
+  };
 
   const onFormSubmit = async (data: CreateNewIdea) => {
     const tags = data.tags.map(({ name }) => name);
     await handleCreateOrUpdateIdeaDoc({ ...data, tags }, createdSelect, isUpdate);
-
     return;
   };
 
@@ -91,19 +92,13 @@ export const IdeaCreateUpdateContainer = ({
     <Form onSubmit={handleSubmit(onFormSubmit)}>
       <Stack hasGutter>
         <StackItem>
-          <FormGroup
-            fieldId="title"
-            label={
-              <Text style={{ color: '#2121218A' }} className="pf-u-pb-sm">
-                Give a title for your idea:
-              </Text>
-            }
-          >
-            <Controller
-              name="title"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
+          <Controller
+            name="title"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <FormGroup fieldId="title" isRequired label="Give a title for your idea:">
                 <TextInput
                   id="title"
                   aria-label="title"
@@ -111,24 +106,18 @@ export const IdeaCreateUpdateContainer = ({
                   placeholder="What is your idea about?"
                   {...field}
                 />
-              )}
-            />
-          </FormGroup>
+              </FormGroup>
+            )}
+          />
         </StackItem>
         <StackItem>
-          <FormGroup
-            fieldId="desc"
-            label={
-              <Text style={{ color: '#2121218A' }} className="pf-u-pb-sm">
-                Brief description
-              </Text>
-            }
-          >
-            <Controller
-              name="description"
-              control={control}
-              defaultValue=""
-              render={({ field }) => (
+          <Controller
+            name="description"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <FormGroup fieldId="desc" isRequired label=" Brief description">
                 <TextArea
                   isRequired
                   id="description"
@@ -137,19 +126,12 @@ export const IdeaCreateUpdateContainer = ({
                   rows={10}
                   {...field}
                 />
-              )}
-            />
-          </FormGroup>
+              </FormGroup>
+            )}
+          />
         </StackItem>
         <StackItem>
-          <FormGroup
-            fieldId="title"
-            label={
-              <Text style={{ color: '#2121218A' }} className="pf-u-pb-sm">
-                Add some tags to your idea so others can find it:
-              </Text>
-            }
-          >
+          <FormGroup fieldId="title" label=" Add some tags to your idea so others can find it:">
             <Select
               chipGroupProps={{
                 numChips: 3,
@@ -163,16 +145,13 @@ export const IdeaCreateUpdateContainer = ({
               isCreatable
               onCreateOption={(newOptionValue) => onCreate({ name: newOptionValue }, 'name')}
               onClear={onClear}
-              onTypeaheadInputChanged={(value) => {
-                setUnDebouncedState(value);
-              }}
               selections={selections}
               isOpen={selectIsOpen}
-              loadingVariant={isDebouncing ? 'spinner' : undefined}
+              loadingVariant={tagList.isLoading ? 'spinner' : undefined}
               aria-labelledby="tags for an idea"
               placeholderText="Select a tag"
             >
-              {searchedTags.map((tag) => (
+              {tagList.data.map((tag) => (
                 <SelectOption value={tag} key={tag} />
               ))}
             </Select>

@@ -151,7 +151,6 @@ export class IdeaModel {
     if (ideaDetails.docs.length !== 1) {
       return;
     }
-    console.log({ ideaDetails });
     return this.formatIdea(ideaDetails.docs[0]);
   }
 

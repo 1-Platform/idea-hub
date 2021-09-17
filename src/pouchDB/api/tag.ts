@@ -1,4 +1,4 @@
-import { DesignDoc, TagDoc } from 'pouchDB/types';
+import { DesignDoc, TagDoc } from '../types';
 
 export class TagModel {
   _db: PouchDB.Database;
@@ -6,10 +6,7 @@ export class TagModel {
     this._db = db;
   }
 
-  async getTagList(
-    search: string,
-    limit = 10
-  ): Promise<PouchDB.Find.FindResponse<Record<string, unknown>>> {
+  async getTagList(limit = 10): Promise<PouchDB.Find.FindResponse<Record<string, unknown>>> {
     return this._db.find({
       selector: {
         type: 'tag',
@@ -25,7 +22,7 @@ export class TagModel {
   async createNewTags(tags: string[]): Promise<(PouchDB.Core.Response | PouchDB.Core.Error)[]> {
     const timestamp = new Date().getTime();
     const tagsToBeCreated = tags.map((tagName) => ({
-      _id: tagName,
+      _id: tagName.toLowerCase(),
       createdAt: timestamp,
       type: 'tag',
     }));

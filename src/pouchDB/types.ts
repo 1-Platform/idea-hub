@@ -5,12 +5,18 @@ export enum DesignDoc {
   CountOfTagsUsed = 'tags/tags-count',
   HomePageFilter = 'filters/homepage',
   IdeaDetailPageFilter = 'filters/ideaDetailPage',
+  ReplicationFilter = 'filters/replication',
 }
 
 export enum IndexDoc {
   SortedByTypeVoteAuthor = 'type-votes-author-index',
   SortedByTypeIdAuthor = 'type-id-author-index',
   SortedByTypeIdeaidVotes = 'type-ideaId-votes-index',
+}
+
+export interface DesignDocument {
+  version: number;
+  validate_doc_update?: string;
 }
 
 interface Updation {
@@ -40,7 +46,7 @@ export interface IdeaDoc extends CreateIdeaDoc, Updation {
   ideaId: string;
 }
 
-// _id: comments/<idea_id>/<timestamp>
+// _id: comments:<idea_id>:<timestamp>
 export interface CreateIdeaCommentDoc {
   _id: string;
   type: 'comment';
@@ -61,7 +67,7 @@ export interface TagDoc extends CreateTagDoc, Updation {
   createdAt: number;
 }
 
-//_id likes/<idea_id>/comments/timestamp/<user-id>
+//_id likes:<idea_id>:comments:timestamp:<user-id>
 export interface CreateLikeDoc {
   type: 'like';
   commentId: string;
@@ -71,7 +77,7 @@ export interface LikeDoc extends CreateLikeDoc, Updation {
   createdAt: number;
 }
 
-//_id votes/<idea_id>/<user-id>
+//_id votes:<idea_id>:<user-id>
 export interface CreateVoteDoc {
   type: 'vote';
   ideaId: string;

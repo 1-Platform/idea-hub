@@ -1,4 +1,6 @@
-const designDocuments: PouchDB.Core.PutDocument<{ version: number }>[] = [
+import { DesignDocument } from './types';
+
+const designDocuments: PouchDB.Core.PutDocument<DesignDocument>[] = [
   {
     _id: '_design/votes',
     views: {
@@ -11,6 +13,33 @@ const designDocuments: PouchDB.Core.PutDocument<{ version: number }>[] = [
         reduce: `_count`,
       },
     },
+    validate_doc_update: `function (newDoc, oldDoc, userCtx, secObj) {
+      if (newDoc.type === 'idea' || newDoc.type === 'comment') {
+        if (userCtx.roles.indexOf(newDoc.authorId) !== -1) {
+          return;
+        } else {
+          throw { forbidden: 'Unauthorized access' };
+        }
+      }
+      if (newDoc.type === 'like' || newDoc.type === 'vote') {
+        var idSplittedByColor = newDoc._id.split(':');
+        var rhatUUID = idSplittedByColor[idSplittedByColor.length - 1];
+
+         if (userCtx.roles.indexOf(rhatUUID) !== -1) {
+           return;
+         } else {
+           throw { forbidden: 'Unauthorized access' };
+         }
+      }
+
+      if(newDoc.type === 'tag' && newDoc._deleted === true){
+        if (userCtx.roles.indexOf('_admin') !== -1) {
+          return;
+        } else {
+          throw { forbidden: 'Unauthorized access' };
+        }
+      }
+    }`,
     version: 0.1,
   },
   {
@@ -74,28 +103,31 @@ const designDocuments: PouchDB.Core.PutDocument<{ version: number }>[] = [
         }
         return false;
       }`,
+      replication: `function (doc, req) {
+         return doc._id.indexOf('_design') !== 0;
+      }`,
     },
     version: 0.1,
   },
 ];
 
 export const pouchDBDesignDocCreator = async (db: PouchDB.Database): Promise<void> => {
-  designDocuments.map(async (designDocument) => {
-    try {
-      const res = await db.put(designDocument);
-      console.log(res);
-    } catch (error) {
-      if (error.status === 409) {
-        const existingOneId = error.id;
-        const exisitingDesignDoc = await db.get<{ version: number }>(existingOneId);
-        if (exisitingDesignDoc?.version < designDocument.version) {
-          designDocument._rev = exisitingDesignDoc._rev;
-          const res = await db.put(designDocument);
-          console.log(res);
+  await Promise.all(
+    designDocuments.map(async (designDocument) => {
+      try {
+        await db.put(designDocument);
+      } catch (error) {
+        if (error.status === 409) {
+          const existingOneId = error.docId;
+          const exisitingDesignDoc = await db.get<{ version: number }>(existingOneId);
+          if (exisitingDesignDoc?.version < designDocument.version) {
+            designDocument._rev = exisitingDesignDoc._rev;
+            await db.put(designDocument);
+          }
+        } else {
+          console.error(error);
         }
-      } else {
-        throw new Error(error);
       }
-    }
-  });
+    })
+  );
 };

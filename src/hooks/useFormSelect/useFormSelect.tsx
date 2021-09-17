@@ -36,8 +36,8 @@ export const useFormSelect = <T extends FieldValues>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const selections = useMemo(() => data.fields.map((field: any) => field.name), [data.fields]);
 
-  const onToggle = useCallback((): void => {
-    setSelectIsOpen((state) => !state);
+  const onToggle = useCallback((isExpanded?: boolean): void => {
+    setSelectIsOpen(typeof isExpanded === 'boolean' ? isExpanded : (state) => !state);
   }, []);
 
   /**

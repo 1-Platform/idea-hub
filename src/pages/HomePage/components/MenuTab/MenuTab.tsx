@@ -24,6 +24,8 @@ export const MenuTab = ({ handleTabChange, tab }: Props): JSX.Element => {
         <TextInput
           placeholder="Looking for an idea!"
           type="search"
+          aria-label="Search ideas"
+          id="search-bar"
           iconVariant="search"
           style={{ borderColor: '#EEEEEE' }}
         />
