@@ -32,7 +32,7 @@ export class CommentModel {
           $lte: startKey || `comment:${ideaId}:\uffff`,
         },
       },
-      sort: [{ type: 'desc' }, { _id: 'desc' }],
+      sort: [{ type: 'desc' }, { _id: 'desc' }, { authorId: 'desc' }],
       use_index: IndexDoc.SortedByTypeIdAuthor,
     })) as PouchDB.Find.FindResponse<CommentDoc>;
 
@@ -135,6 +135,7 @@ export class CommentModel {
     await this._db.put<CreateCommentDoc>({
       _id: `comment:${ideaId}:${timestamp}-${rhatUUID}`,
       createdAt: timestamp,
+      updatedAt: timestamp,
       type: 'comment',
       content,
       votes: 0,

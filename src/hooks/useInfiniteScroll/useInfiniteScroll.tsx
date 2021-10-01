@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useRef } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { debounceFn } from 'utils/debounceFn';
 
@@ -26,6 +27,14 @@ export const useInfiniteScroll = (
     isFetching: false,
     isFetchDisabled: false,
   });
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     /* this can be react ref or fn that returns querySelector
@@ -54,7 +63,7 @@ export const useInfiniteScroll = (
       fetchState.isFetchDisabled
     )
       return;
-    setFetchState((fetchState) => ({ ...fetchState, isFetching: true }));
+    isMounted.current && setFetchState((fetchState) => ({ ...fetchState, isFetching: true }));
   }, [fetchState.isFetching, fetchState.isFetchDisabled]);
 
   const handleFetchState = (state: keyof FetchState, type: boolean): void => {

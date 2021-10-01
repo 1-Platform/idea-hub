@@ -1,4 +1,4 @@
-import { FC, Children as ReactChildren, ReactElement, CSSProperties } from 'react';
+import { FC, Children as ReactChildren, ReactElement, CSSProperties, useState } from 'react';
 
 import {
   Button,
@@ -32,6 +32,7 @@ export const VoteCard: FC<Props> & CompoundComponents = ({
   hasVoted,
   children,
 }) => {
+  const [isVoting, setIsVoting] = useState(false);
   const buttonChildren: ReactElement[] = [];
 
   ReactChildren.forEach(children as ReactElement, (child: ReactElement) => {
@@ -39,6 +40,12 @@ export const VoteCard: FC<Props> & CompoundComponents = ({
       buttonChildren.push(child);
     }
   });
+
+  const handleVoteClick = async () => {
+    setIsVoting(true);
+    onVoteClick && (await onVoteClick());
+    setIsVoting(false);
+  };
 
   return (
     <Card>
@@ -63,12 +70,14 @@ export const VoteCard: FC<Props> & CompoundComponents = ({
           <FlexItem spacer={{ default: 'spacerLg' }}>
             <Button
               variant="secondary"
-              onClick={onVoteClick}
+              onClick={handleVoteClick}
               isDanger={hasVoted}
-              className="pf-u-px-lg pf-u-py-sm"
+              isLoading={isVoting}
+              isDisabled={isVoting}
+              className="pf-u-py-sm"
               style={{ '--pf-c-button--after--BorderRadius': '8px' } as CSSProperties}
             >
-              {hasVoted ? 'VOTED' : 'VOTE'}
+              {isVoting ? 'VOTING' : hasVoted ? 'VOTED' : 'VOTE'}
             </Button>
           </FlexItem>
           <FlexItem spacer={{ default: 'spacerXs' }}>

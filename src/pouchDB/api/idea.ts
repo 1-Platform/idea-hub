@@ -15,7 +15,7 @@ export class IdeaModel {
    * Then an additonal call is made in bull to check user has voted
    */
   async getIdeaListByRecent({
-    startKey = 'idea:\\uffff',
+    startKey = 'idea:\uffff',
     limit = 20,
     skip = 0,
     filter = {},
@@ -41,7 +41,6 @@ export class IdeaModel {
       sort: [{ type: 'desc' }, { _id: 'desc' }],
       use_index: IndexDoc.SortedByTypeIdAuthor,
     })) as PouchDB.Find.FindResponse<IdeaDoc>;
-
     const formatedIdeaListWithHasUserVotes = await this.hasUserVotedOn(ideas.docs);
     const lastDocId = ideas.docs[ideas.docs.length - 1]?._id;
     return {
