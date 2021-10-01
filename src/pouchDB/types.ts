@@ -90,6 +90,7 @@ export interface CreateCommentDoc {
   content: string;
   votes: number;
   createdAt: number;
+  updatedAt: number;
   author: string;
   authorId: string;
   type: 'comment';

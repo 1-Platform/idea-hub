@@ -14,31 +14,128 @@ const designDocuments: PouchDB.Core.PutDocument<DesignDocument>[] = [
       },
     },
     validate_doc_update: `function (newDoc, oldDoc, userCtx, secObj) {
-      if (newDoc.type === 'idea' || newDoc.type === 'comment') {
-        if (userCtx.roles.indexOf(newDoc.authorId) !== -1) {
+      // utility functions
+      function isRequired(field, message) {
+        message = message || 'Document must have a ' + field;
+        if (!newDoc.hasOwnProperty(field)) throw { forbidden: message };
+      }
+
+      function validate(beTrue, message) {
+        if (!beTrue) throw { forbidden: message };
+      }
+
+      function unchanged(field) {
+        if (oldDoc && toJSON(oldDoc[field]) != toJSON(newDoc[field]))
+          throw { forbidden: "Field can't be changed: " + field };
+      }
+
+      // role functions
+      function isUser(rhatUUID) {
+        return userCtx.roles.indexOf('user:' + rhatUUID) !== -1;
+      }
+
+      function isAdmin() {
+        return userCtx.roles.indexOf('_admin') !== -1
+      }
+
+      // global validation
+      unchanged('createdAt');
+      // idea validation
+      if (newDoc.type === 'idea') {
+        var docFields = [
+          'author',
+          'title',
+          'description',
+          'tags',
+          'authorId',
+          'votes',
+          'comments',
+          'createdAt',
+          'updatedAt',
+          'ideaId',
+        ];
+        
+        for (var fieldIndex = 0; fieldIndex < docFields.length; fieldIndex++) {
+          isRequired(docFields[fieldIndex]);
+        }
+
+        validate(isArray(newDoc.tags), 'Tags must be array');
+        if (isUser(newDoc.authorId)) {
           return;
         } else {
-          throw { forbidden: 'Unauthorized access' };
+          // if not the owner only vote and comment count can change
+          // vote and comment count will get automatically validated by aggregration of votes
+          for (var fieldIndex = 0; fieldIndex < docFields.length; fieldIndex++) {
+            if (docFields[fieldIndex] !== 'votes' && docFields[fieldIndex] !== 'comments') {
+              unchanged(docFields[fieldIndex]);
+            }
+          }
         }
+        return;
       }
-      if (newDoc.type === 'like' || newDoc.type === 'vote') {
+
+      // comment validation
+      if (newDoc.type === 'comment') {
+        var docFields = ['createdAt', 'content', 'votes', 'author', 'authorId', 'ideaId'];
+        for (var fieldIndex = 0; fieldIndex < docFields.length; fieldIndex++) {
+          isRequired(docFields[fieldIndex]);
+        }
+        if (isUser(newDoc.authorId)) {
+          return;
+        } else {
+          for (var fieldIndex = 0; fieldIndex < docFields.length; fieldIndex++) {
+            if (docFields[fieldIndex] !== 'votes') {
+              unchanged(docFields[fieldIndex]);
+            }
+          }
+        }
+        return;
+      }
+
+      // validation for like
+      if (newDoc.type === 'like') {
+        var docFields = ['createdAt', 'commentId'];
+        for (var fieldIndex = 0; fieldIndex < docFields.length; fieldIndex++) {
+          isRequired(docFields[fieldIndex]);
+        }
+
+        // like:commentId:rhatUUID
         var idSplittedByColor = newDoc._id.split(':');
         var rhatUUID = idSplittedByColor[idSplittedByColor.length - 1];
 
-         if (userCtx.roles.indexOf(rhatUUID) !== -1) {
-           return;
-         } else {
-           throw { forbidden: 'Unauthorized access' };
-         }
-      }
-
-      if(newDoc.type === 'tag' && newDoc._deleted === true){
-        if (userCtx.roles.indexOf('_admin') !== -1) {
+        if (isUser(rhatUUID)) {
           return;
         } else {
           throw { forbidden: 'Unauthorized access' };
         }
       }
+
+      // validation for vote
+      if (newDoc.type === 'vote') {
+        var docFields = ['createdAt', 'ideaId'];
+        for (var fieldIndex = 0; fieldIndex < docFields.length; fieldIndex++) {
+          isRequired(docFields[fieldIndex]);
+        }
+        // vote format: vote:ideaId:rhatUUID
+        var idSplittedByColor = newDoc._id.split(':');
+        var rhatUUID = idSplittedByColor[idSplittedByColor.length - 1];
+
+        if (isUser(rhatUUID)) {
+          return;
+        } else {
+          throw { forbidden: 'Unauthorized access' };
+        }
+      }
+
+      // deletion of tag admin only
+      if (newDoc.type === 'tag') {
+        if (newDoc._deleted === true && !isAdmin()) {
+          throw { forbidden: 'Unauthorized access' };
+        }
+        return;
+      }
+
+      throw { forbidden: 'Document not recognized' };
     }`,
     version: 0.1,
   },

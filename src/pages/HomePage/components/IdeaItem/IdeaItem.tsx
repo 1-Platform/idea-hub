@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, MouseEventHandler } from 'react';
 
 import {
   Card,
@@ -46,6 +46,7 @@ export const IdeaItem = ({
   isArchived,
 }: Props): JSX.Element => {
   const { isOpen, handleToggle } = useToggle(false);
+  const [isVoting, setIsVoting] = useState(false);
 
   /**
    * This function is used to convert the postedOn prop to formated string as shown in return
@@ -54,6 +55,13 @@ export const IdeaItem = ({
    */
   const postedOnFormated = useMemo((): string => postedOnFormater(postedOn), [postedOn]);
   const userinfo = window.OpAuthHelper.getUserInfo();
+
+  const handleVoteClick: MouseEventHandler<HTMLButtonElement> = async (event) => {
+    event.preventDefault();
+    setIsVoting(true);
+    await onVoteClick();
+    setIsVoting(false);
+  };
 
   const dropdownItems = [
     <DropdownItem key="link" component="button" onClick={onEditIdeaClick}>
@@ -86,14 +94,16 @@ export const IdeaItem = ({
             <FlexItem>
               <Button
                 variant="secondary"
+                isSmall
                 isDanger={hasVoted}
                 className={styles.voteButton}
-                onClick={async (event) => {
-                  event.preventDefault();
-                  await onVoteClick();
-                }}
+                onClick={handleVoteClick}
+                isDisabled={isVoting}
+                isLoading={isVoting}
               >
-                <Text component={TextVariants.small}>{hasVoted ? 'VOTED' : 'VOTE'}</Text>
+                <Text component={TextVariants.small}>
+                  {isVoting ? 'VOTING' : hasVoted ? 'VOTED' : 'VOTE'}
+                </Text>
               </Button>
             </FlexItem>
           </Flex>

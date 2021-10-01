@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
   Button,
   FormGroup,
@@ -16,9 +16,10 @@ import {
 import { Controller, useForm } from 'react-hook-form';
 
 import { useFormSelect } from 'hooks';
-import { usePouchDB } from 'context';
+import { tagDoc } from 'pouchDB';
 import { CreateNewIdea } from 'pages/HomePage/types';
 import { CreateIdeaDoc, IdeaDoc } from 'pouchDB/types';
+import useSWR from 'swr';
 
 interface Props {
   handleModalClose: () => void;
@@ -30,15 +31,20 @@ interface Props {
   updateDefaultValue?: IdeaDoc;
 }
 
-type SearchTag = { isLoading: boolean; data: string[] };
-
 export const IdeaCreateUpdateContainer = ({
   handleModalClose,
   handleCreateOrUpdateIdeaDoc,
   updateDefaultValue,
 }: Props): JSX.Element => {
-  const { tag } = usePouchDB();
-  const [tagList, setTagList] = useState<SearchTag>({ isLoading: true, data: [] });
+  const { data: tags, error } = useSWR('/tags', async () => {
+    try {
+      const tags = await tagDoc.getTagList(1000);
+      return tags.docs.map((el) => el._id);
+    } catch (error) {
+      window.OpNotification.danger({ subject: 'Fetching tag failed' });
+    }
+    return [];
+  });
   // form handling hooks
   const {
     handleSubmit,
@@ -48,6 +54,7 @@ export const IdeaCreateUpdateContainer = ({
   } = useForm<CreateNewIdea>();
 
   const isUpdate = Boolean(updateDefaultValue?._rev);
+  const isLoading = !error && !tags;
 
   const { selectIsOpen, onToggle, selections, handleSelect, onClear, onCreate, createdSelect } =
     useFormSelect({
@@ -66,21 +73,6 @@ export const IdeaCreateUpdateContainer = ({
       });
     }
   }, [updateDefaultValue, reset]);
-
-  useEffect(() => {
-    handleFetchTagList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleFetchTagList = async () => {
-    try {
-      const tags = await tag.getTagList(1000);
-      setTagList({ isLoading: false, data: tags.docs.map((el) => el._id) });
-    } catch (error) {
-      setTagList({ isLoading: false, data: [] });
-      window.OpNotification.danger({ subject: 'Fetching tag failed' });
-    }
-  };
 
   const onFormSubmit = async (data: CreateNewIdea) => {
     const tags = data.tags.map(({ name }) => name);
@@ -147,11 +139,11 @@ export const IdeaCreateUpdateContainer = ({
               onClear={onClear}
               selections={selections}
               isOpen={selectIsOpen}
-              loadingVariant={tagList.isLoading ? 'spinner' : undefined}
+              loadingVariant={isLoading ? 'spinner' : undefined}
               aria-labelledby="tags for an idea"
               placeholderText="Select a tag"
             >
-              {tagList.data.map((tag) => (
+              {(tags || []).map((tag) => (
                 <SelectOption value={tag} key={tag} />
               ))}
             </Select>
@@ -166,7 +158,13 @@ export const IdeaCreateUpdateContainer = ({
               </Button>
             </SplitItem>
             <SplitItem>
-              <Button key="submit" variant="primary" type="submit" isLoading={isSubmitting}>
+              <Button
+                key="submit"
+                variant="primary"
+                type="submit"
+                isLoading={isSubmitting}
+                isDisabled={isSubmitting}
+              >
                 {isUpdate ? 'Update my idea!' : 'Post my idea!'}
               </Button>
             </SplitItem>

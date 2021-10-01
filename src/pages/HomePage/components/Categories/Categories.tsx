@@ -1,16 +1,25 @@
 import { CSSProperties, useCallback } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
-import { Menu, MenuList, MenuGroup, MenuItem, Split, SplitItem } from '@patternfly/react-core';
+import {
+  Menu,
+  MenuList,
+  MenuGroup,
+  MenuItem,
+  Split,
+  SplitItem,
+  Spinner,
+} from '@patternfly/react-core';
 import { css } from '@patternfly/react-styles';
 import { useQuery } from 'hooks';
 import { TagCount } from 'pages/HomePage/types';
 
 interface Props {
-  tags: TagCount;
+  tags: TagCount['data'];
+  isLoading?: boolean;
 }
 
-export const Categories = ({ tags }: Props): JSX.Element => {
+export const Categories = ({ tags, isLoading }: Props): JSX.Element => {
   const userInfo = window?.OpAuthHelper?.getUserInfo();
 
   // url manipulation hooks
@@ -57,27 +66,33 @@ export const Categories = ({ tags }: Props): JSX.Element => {
         </MenuList>
       </MenuGroup>
       <MenuGroup label="Categories">
-        <MenuList>
-          {tags.data.map(({ key, value }) => (
-            <MenuItem
-              key={key}
-              onClick={() => handleMenuClick('category', category === key ? null : key)}
-            >
-              <Split>
-                <SplitItem
-                  className={css({
-                    'pf-u-font-weight-bold': category === key,
-                    capitalize: true,
-                  })}
-                >
-                  {key}
-                </SplitItem>
-                <SplitItem isFilled />
-                <SplitItem style={{ opacity: 0.4 }}>{value}</SplitItem>
-              </Split>
-            </MenuItem>
-          ))}
-        </MenuList>
+        {isLoading ? (
+          <div className="pf-u-p-md">
+            <Spinner size="lg" />
+          </div>
+        ) : (
+          <MenuList>
+            {tags.map(({ key, value }) => (
+              <MenuItem
+                key={key}
+                onClick={() => handleMenuClick('category', category === key ? null : key)}
+              >
+                <Split>
+                  <SplitItem
+                    className={css({
+                      'pf-u-font-weight-bold': category === key,
+                      capitalize: true,
+                    })}
+                  >
+                    {key}
+                  </SplitItem>
+                  <SplitItem isFilled />
+                  <SplitItem style={{ opacity: 0.4 }}>{value}</SplitItem>
+                </Split>
+              </MenuItem>
+            ))}
+          </MenuList>
+        )}
       </MenuGroup>
     </Menu>
   );
