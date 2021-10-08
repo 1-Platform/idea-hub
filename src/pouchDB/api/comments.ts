@@ -132,7 +132,7 @@ export class CommentModel {
   async createComment(ideaId: string, content: string): Promise<PouchDB.Core.Response> {
     const { rhatUUID, fullName } = window.OpAuthHelper.getUserInfo();
     const timestamp = new Date().getTime();
-    await this._db.put<CreateCommentDoc>({
+    return this._db.put<CreateCommentDoc>({
       _id: `comment:${ideaId}:${timestamp}-${rhatUUID}`,
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -143,10 +143,9 @@ export class CommentModel {
       authorId: rhatUUID,
       ideaId,
     });
-    return this.updateTotalCommentCountOfaAnIdea(ideaId);
   }
 
-  async updateTotalCommentCountOfaAnIdea(ideaId: string): Promise<PouchDB.Core.Response> {
+  async updateTotalCommentCountOfAnIdea(ideaId: string): Promise<PouchDB.Core.Response> {
     const { rows } = await this._db.query(DesignDoc.CountOfCommentsForAnIdea, {
       reduce: true,
       group: true,

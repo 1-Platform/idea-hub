@@ -88,11 +88,20 @@ export const IdeaCreateUpdateContainer = ({
             name="title"
             control={control}
             defaultValue=""
-            rules={{ required: true }}
-            render={({ field }) => (
-              <FormGroup fieldId="title" isRequired label="Give a title for your idea:">
+            rules={{ required: true, maxLength: 250 }}
+            render={({ field, fieldState: { error } }) => (
+              <FormGroup
+                fieldId="title"
+                isRequired
+                label="Give a title for your idea:"
+                helperTextInvalid={
+                  error?.type === 'maxLength' && 'Should be less than 250 characters'
+                }
+                validated={error ? 'error' : 'default'}
+              >
                 <TextInput
                   id="title"
+                  validated={error ? 'error' : 'default'}
                   aria-label="title"
                   isRequired
                   placeholder="What is your idea about?"
@@ -107,11 +116,20 @@ export const IdeaCreateUpdateContainer = ({
             name="description"
             control={control}
             defaultValue=""
-            rules={{ required: true }}
-            render={({ field }) => (
-              <FormGroup fieldId="desc" isRequired label=" Brief description">
+            rules={{ required: true, maxLength: 500 }}
+            render={({ field, fieldState: { error } }) => (
+              <FormGroup
+                fieldId="desc"
+                isRequired
+                label=" Brief description"
+                helperTextInvalid={
+                  error?.type === 'maxLength' && 'Should be less than 500 characters'
+                }
+                validated={error ? 'error' : 'default'}
+              >
                 <TextArea
                   isRequired
+                  validated={error ? 'error' : 'default'}
                   id="description"
                   aria-label="description"
                   placeholder="Describe you idea in simple terms…"

@@ -63,7 +63,6 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
 
   const dbChangeFeed = useRef<PouchDB.Core.Changes<IdeaDoc | CommentDoc>>();
 
-  const commentArea = useRef<HTMLInputElement | null>(null);
   const commentWatch = watch('comment');
 
   const { fetchState, handleFetchState } = useInfiniteScroll(() => {
@@ -126,11 +125,14 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
   }: PouchDB.Core.ChangesResponseChange<IdeaDoc | CommentDoc>) => {
     if (doc && doc?.type === 'comment' && commentsRef.current) {
       const newCommentList = await onCommentChange(doc, commentsRef.current.docs, commentModel);
-      mutateComments((comments) => ({
-        cb: comments?.cb,
-        hasNextPage: Boolean(comments?.hasNextPage),
-        docs: newCommentList,
-      }));
+      mutateComments(
+        (comments) => ({
+          cb: comments?.cb,
+          hasNextPage: Boolean(comments?.hasNextPage),
+          docs: newCommentList,
+        }),
+        false
+      );
     }
   };
 
@@ -138,6 +140,7 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
     try {
       await commentModel.createComment(ideaId, commentFieldValue);
       setValue('comment', '');
+      commentModel.updateTotalCommentCountOfAnIdea(ideaId);
     } catch (error) {
       console.error(error);
       window.OpNotification.danger({
@@ -250,13 +253,17 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
           </SplitItem>
           <SplitItem isFilled>
             <Form onSubmit={handleSubmit(onFormSubmit)}>
-              <FormGroup fieldId="comment">
-                <Controller
-                  name="comment"
-                  control={control}
-                  rules={{ required: true, maxLength: '150' }}
-                  defaultValue=""
-                  render={({ field: { ref, ...field }, fieldState: { error } }) => (
+              <Controller
+                name="comment"
+                control={control}
+                rules={{ required: true }}
+                defaultValue=""
+                render={({ field, fieldState: { error } }) => (
+                  <FormGroup
+                    fieldId="comment"
+                    helperTextInvalid={error?.message}
+                    validated={error?.message ? 'error' : 'default'}
+                  >
                     <TextArea
                       style={{ resize: 'none' }}
                       id="comment"
@@ -265,15 +272,11 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
                       allowFullScreen
                       isRequired
                       validated={error?.message ? 'error' : 'default'}
-                      ref={(e) => {
-                        ref(e);
-                        commentArea.current = e;
-                      }}
                       {...field}
                     />
-                  )}
-                />
-              </FormGroup>
+                  </FormGroup>
+                )}
+              />
               <ActionGroup className="pf-u-mt-0">
                 <Button
                   variant="primary"
