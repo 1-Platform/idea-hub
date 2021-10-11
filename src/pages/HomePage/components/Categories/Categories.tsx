@@ -72,7 +72,7 @@ export const Categories = ({ tags, isLoading }: Props): JSX.Element => {
           </div>
         ) : (
           <MenuList>
-            {tags.map(({ key, value }) => (
+            {tags.slice(0, 5).map(({ key, value }) => (
               <MenuItem
                 key={key}
                 onClick={() => handleMenuClick('category', category === key ? null : key)}

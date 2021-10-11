@@ -36,7 +36,7 @@ export const CommentField: FC<Props> & CompoundComponents = ({
 
   return (
     <Flex flexWrap={{ default: 'nowrap' }} alignItems={{ default: 'alignItemsFlexStart' }}>
-      <FlexItem>
+      <FlexItem style={{ flexShrink: 0 }}>
         <Avatar
           src={
             avatar ||
