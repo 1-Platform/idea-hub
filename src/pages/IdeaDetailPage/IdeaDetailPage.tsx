@@ -59,7 +59,7 @@ export const IdeaDetailPage = (): JSX.Element => {
         })
         .on('error', function (err) {
           console.error(err);
-          window.OpNotification.warning({
+          window.OpNotification.warn({
             subject: 'Comment live change registration failed',
             body: err.message,
           });
@@ -98,6 +98,13 @@ export const IdeaDetailPage = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [idea]
   );
+
+  const onShareButtonClick = () => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(window.location.href);
+      window.OpNotification.success({ subject: 'Idea link copied to clipboard' });
+    }
+  };
 
   if (isIdeaLoading) {
     return (
@@ -183,7 +190,12 @@ export const IdeaDetailPage = (): JSX.Element => {
               hasVoted={idea.hasVoted}
               onVoteClick={() => handleVoteClick(idea.hasVoted, idea._id)}
             >
-              <VoteCard.Button variant="link" icon={<ShareIcon />} style={{ color: 'unset' }}>
+              <VoteCard.Button
+                variant="link"
+                icon={<ShareIcon />}
+                style={{ color: 'unset' }}
+                onClick={onShareButtonClick}
+              >
                 Share
               </VoteCard.Button>
             </VoteCard>

@@ -10,7 +10,7 @@ import styles from './appLayout.module.scss';
 
 export const AppLayout: FC = ({ children }) => {
   return (
-    <Page mainContainerId="app-layout-page">
+    <Page mainContainerId="app-layout-page" className={styles['app-layout']}>
       <Container>
         <Flex
           direction={{ default: 'column' }}

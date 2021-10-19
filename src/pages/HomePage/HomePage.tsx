@@ -96,7 +96,7 @@ export const HomePage = (): JSX.Element => {
         .on('change', onIdeaChangeCB)
         .on('error', function (err) {
           console.error(err);
-          window.OpNotification.warning({
+          window.OpNotification.warn({
             subject: 'Idea live change registration failed',
             body: err.message,
           });
