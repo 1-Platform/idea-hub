@@ -102,7 +102,7 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
         .on('change', handleCommentFeedChange)
         .on('error', function (err) {
           console.error(err);
-          window.OpNotification.warning({
+          window.OpNotification.warn({
             subject: 'Idea live change registration failed',
             body: err.message,
           });

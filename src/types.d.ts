@@ -1,4 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'pouchdb-debug';
+
+declare namespace JSX {
+  interface IntrinsicElements {
+    'opc-header': any;
+    'opc-footer': any;
+    'opc-menu-drawer': any;
+    'opc-notification-drawer': any;
+    'opc-feedback': any;
+    'opc-provider': any;
+    'opc-nav': any;
+  }
+}
 
 interface Window {
   OpAuthHelper: OpAuthHelper;
@@ -7,7 +20,7 @@ interface Window {
 
 interface OpNotification {
   success: (arg0: NotificationArg) => void;
-  warning: (arg0: NotificationArg) => void;
+  warn: (arg0: NotificationArg) => void;
   danger: (arg0: NotificationArg) => void;
 }
 
