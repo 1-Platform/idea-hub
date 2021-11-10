@@ -77,7 +77,7 @@ export const VoteCard: FC<Props> & CompoundComponents = ({
               className="pf-u-py-sm"
               style={{ '--pf-c-button--after--BorderRadius': '8px' } as CSSProperties}
             >
-              {isVoting ? 'VOTING' : hasVoted ? 'VOTED' : 'VOTE'}
+              {hasVoted ? 'VOTED' : 'VOTE'}
             </Button>
           </FlexItem>
           <FlexItem spacer={{ default: 'spacerXs' }}>

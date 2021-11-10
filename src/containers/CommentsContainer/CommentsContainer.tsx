@@ -23,6 +23,8 @@ import {
   Button,
   Spinner,
 } from '@patternfly/react-core';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { SortAmountDownIcon, CubesIcon } from '@patternfly/react-icons';
 import { Controller, useForm } from 'react-hook-form';
 import { CommentBox } from './components/CommentBox';
@@ -41,6 +43,10 @@ interface Props {
   ideaDetails: PouchDB.Core.ExistingDocument<IdeaDoc & PouchDB.Core.AllDocsMeta>;
 }
 
+const CommentFormValidtor = yup.object({
+  comment: yup.string().max(1000).trim().required(),
+});
+
 const COMMENTS_ON_EACH_LOAD = 20;
 
 export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
@@ -53,7 +59,7 @@ export const CommentsContainer = ({ ideaDetails }: Props): JSX.Element => {
     watch,
     setValue,
     formState: { isSubmitting },
-  } = useForm<FormData>();
+  } = useForm<FormData>({ resolver: yupResolver(CommentFormValidtor) });
 
   const { comments, commentsRef, isCommentsLoading, mutateComments } = useGetComments({
     ideaId,
