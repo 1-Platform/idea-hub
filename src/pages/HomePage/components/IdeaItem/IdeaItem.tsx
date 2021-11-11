@@ -1,4 +1,4 @@
-import { useMemo, useState, MouseEventHandler } from 'react';
+import { useMemo, useState, MouseEventHandler, Fragment } from 'react';
 
 import {
   Card,
@@ -64,9 +64,13 @@ export const IdeaItem = ({
   };
 
   const dropdownItems = [
-    <DropdownItem key="link" component="button" onClick={onEditIdeaClick}>
-      Edit my idea
-    </DropdownItem>,
+    isArchived ? (
+      <Fragment key="link" />
+    ) : (
+      <DropdownItem key="link" component="button" onClick={onEditIdeaClick}>
+        Edit my idea
+      </DropdownItem>
+    ),
     <DropdownItem
       key="action"
       component="button"
@@ -101,9 +105,7 @@ export const IdeaItem = ({
                 isDisabled={isVoting}
                 isLoading={isVoting}
               >
-                <Text component={TextVariants.small}>
-                  {isVoting ? 'VOTING' : hasVoted ? 'VOTED' : 'VOTE'}
-                </Text>
+                <Text component={TextVariants.small}>{hasVoted ? 'VOTED' : 'VOTE'}</Text>
               </Button>
             </FlexItem>
           </Flex>

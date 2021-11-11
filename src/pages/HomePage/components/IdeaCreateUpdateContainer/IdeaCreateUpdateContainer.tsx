@@ -14,12 +14,15 @@ import {
   Form,
 } from '@patternfly/react-core';
 import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import useSWR from 'swr';
 
 import { useFormSelect } from 'hooks';
 import { tagDoc } from 'pouchDB';
 import { CreateNewIdea } from 'pages/HomePage/types';
 import { CreateIdeaDoc, IdeaDoc } from 'pouchDB/types';
-import useSWR from 'swr';
+import { reqErrorMsg } from 'utils/errorMessages';
 
 interface Props {
   handleModalClose: () => void;
@@ -30,6 +33,16 @@ interface Props {
   ) => Promise<void>;
   updateDefaultValue?: IdeaDoc;
 }
+
+const IdeaFormValidator = yup.object({
+  title: yup.string().trim().max(250).required(reqErrorMsg('Title')),
+  description: yup.string().trim().max(500).required(reqErrorMsg('Description')),
+  tags: yup.array(
+    yup.object({
+      name: yup.string().trim().required(reqErrorMsg('Tag Name')),
+    })
+  ),
+});
 
 export const IdeaCreateUpdateContainer = ({
   handleModalClose,
@@ -51,7 +64,7 @@ export const IdeaCreateUpdateContainer = ({
     control,
     reset,
     formState: { isSubmitting },
-  } = useForm<CreateNewIdea>();
+  } = useForm<CreateNewIdea>({ resolver: yupResolver(IdeaFormValidator) });
 
   const isUpdate = Boolean(updateDefaultValue?._rev);
   const isLoading = !error && !tags;
@@ -94,9 +107,7 @@ export const IdeaCreateUpdateContainer = ({
                 fieldId="title"
                 isRequired
                 label="Give a title for your idea:"
-                helperTextInvalid={
-                  error?.type === 'maxLength' && 'Should be less than 250 characters'
-                }
+                helperTextInvalid={error?.message}
                 validated={error ? 'error' : 'default'}
               >
                 <TextInput
@@ -122,9 +133,7 @@ export const IdeaCreateUpdateContainer = ({
                 fieldId="desc"
                 isRequired
                 label=" Brief description"
-                helperTextInvalid={
-                  error?.type === 'maxLength' && 'Should be less than 500 characters'
-                }
+                helperTextInvalid={error?.message}
                 validated={error ? 'error' : 'default'}
               >
                 <TextArea
@@ -176,13 +185,7 @@ export const IdeaCreateUpdateContainer = ({
               </Button>
             </SplitItem>
             <SplitItem>
-              <Button
-                key="submit"
-                variant="primary"
-                type="submit"
-                isLoading={isSubmitting}
-                isDisabled={isSubmitting}
-              >
+              <Button key="submit" variant="primary" type="submit" isDisabled={isSubmitting}>
                 {isUpdate ? 'Update my idea!' : 'Post my idea!'}
               </Button>
             </SplitItem>
