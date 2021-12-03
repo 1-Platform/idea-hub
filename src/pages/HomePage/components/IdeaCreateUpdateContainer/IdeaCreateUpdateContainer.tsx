@@ -39,7 +39,7 @@ const IdeaFormValidator = yup.object({
   description: yup.string().trim().max(500).required(reqErrorMsg('Description')),
   tags: yup.array(
     yup.object({
-      name: yup.string().trim().required(reqErrorMsg('Tag Name')),
+      name: yup.string().trim().required(reqErrorMsg('Tag name')),
     })
   ),
 });
@@ -63,7 +63,7 @@ export const IdeaCreateUpdateContainer = ({
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors: formErrors },
   } = useForm<CreateNewIdea>({ resolver: yupResolver(IdeaFormValidator) });
 
   const isUpdate = Boolean(updateDefaultValue?._rev);
@@ -92,6 +92,8 @@ export const IdeaCreateUpdateContainer = ({
     await handleCreateOrUpdateIdeaDoc({ ...data, tags }, createdSelect, isUpdate);
     return;
   };
+
+  const tagsFormFieldError = formErrors?.tags?.find((tag) => Boolean(tag));
 
   return (
     <Form onSubmit={handleSubmit(onFormSubmit)}>
@@ -150,7 +152,12 @@ export const IdeaCreateUpdateContainer = ({
           />
         </StackItem>
         <StackItem>
-          <FormGroup fieldId="title" label=" Add some tags to your idea so others can find it:">
+          <FormGroup
+            fieldId="title"
+            label=" Add some tags to your idea so others can find it:"
+            helperTextInvalid={tagsFormFieldError?.name?.message}
+            validated={Boolean(tagsFormFieldError?.name?.message) ? 'error' : 'default'}
+          >
             <Select
               chipGroupProps={{
                 numChips: 3,
@@ -169,6 +176,7 @@ export const IdeaCreateUpdateContainer = ({
               loadingVariant={isLoading ? 'spinner' : undefined}
               aria-labelledby="tags for an idea"
               placeholderText="Select a tag"
+              menuAppendTo={() => document.body}
             >
               {(tags || []).map((tag) => (
                 <SelectOption value={tag} key={tag} />
