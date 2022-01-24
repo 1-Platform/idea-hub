@@ -1,6 +1,6 @@
 {
   "name": "idea-hub",
-  "version": "0.1.3",
+  "version": "0.2.3",
   "private": true,
   "homepage": "/ideas",
   "author": {
@@ -53,7 +53,16 @@
     "prepare": "husky install",
     "migrate:design-doc": "ts-node -P scripts/tsconfig.json scripts/migrate-couchdb-design-documents.ts",
     "migrate:default-tags": "ts-node -P scripts/tsconfig.json scripts/migrate-couchdb-default-tags.ts",
-    "migrate:all": "npm run migrate:design-doc && npm run migrate:default-tags"
+    "migrate:all": "npm run migrate:design-doc && npm run migrate:default-tags",
+    "clean:reports": "rm -R -f e2e/reports && mkdir e2e/reports",
+    "test:e2e": "cypress run  --headless",
+    "test:e2e:browser": "cypress open",
+    "combine-reports": "mochawesome-merge --reportDir e2e/reports > e2e/reports/mochareports/report.json",
+    "generate-report": "marge e2e/reports/mochareports/report.json -f report -o e2e/reports/mochareports",
+    "e2e:reports": "npm run combine-reports && npm run generate-report",
+    "test:e2e:reports": "npm run test:e2e || npm run e2e:reports",
+    "e2e:report:html": "marge e2e/reports/output.json --reportDir e2e/reports --inline",
+    "combinereports": "mochawesome-merge e2e/reports/mochawesome-report/*.json > e2e/reports/output.json"
   },
   "lint-staged": {
     "*.{ts,tsx}": "eslint --cache --fix"
@@ -93,6 +102,14 @@
     "prettier": "^2.3.1",
     "react-test-renderer": "^17.0.2",
     "ts-node": "^10.2.1",
-    "dotenv-safe": "^8.2.0"
+    "dotenv-safe": "^8.2.0",
+    "cypress": "7.6.0",
+    "cypress-xpath": "1.6.2",
+    "cypress-multi-reporters": "1.4.0",
+    "mocha": "8.3.0",
+    "mochawesome": "6.2.2",
+    "mochawesome-merge": "4.2.0",
+    "mochawesome-report-generator": "5.2.0",
+    "faker": "5.5.3"
   }
 }
