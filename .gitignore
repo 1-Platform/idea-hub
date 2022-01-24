@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .eslintcache
+e2e/reports/
+cypress/fixtures
+cypress/plugins
+cypress/screenshots
+cypress/videos
